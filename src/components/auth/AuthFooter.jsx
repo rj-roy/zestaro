@@ -1,13 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AuthFooter() {
   return (
     <footer className="p-6 text-center space-y-4">
       <Link href="/" className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-900 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-        </svg>
+        <ArrowLeft/>
         <span className="text-sm font-medium">Back to The Story</span>
       </Link>
       
