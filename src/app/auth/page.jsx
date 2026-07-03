@@ -3,6 +3,12 @@ import AuthForm from '@/components/auth/AuthForm';
 import AuthTabs from '@/components/auth/AuthTabs';
 import GoogleButton from '@/components/auth/GoogleButton';
 
+
+export const metadata = {
+    title: "Sign Up | Zestaro",
+    descriptio: "Let's Pick Favourite Dish"
+};
+
 export default async function ZestaroAuth({ searchParams }) {
     const params = await searchParams;
     const login = params.login;
@@ -15,7 +21,7 @@ export default async function ZestaroAuth({ searchParams }) {
                     <AuthTabs isLogin={isLogin} />
                     <GoogleButton />
                     <AuthForm isLogin={isLogin} />
-                    <AuthFooter/>
+                    <AuthFooter />
                 </div>
             </main>
         </div>

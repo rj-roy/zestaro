@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function AuthForm({ isLogin }) {
-    const {data:session} = authClient.useSession();
+    const { data: session } = authClient.useSession();
     const [formData, setFormData] = useState(
         isLogin
             ? { email: '', password: '' }
@@ -67,14 +67,20 @@ export default function AuthForm({ isLogin }) {
         setErrors({});
 
         try {
-            const { data, error } = await authClient.signUp.email({
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-            });
+            if (isLogin) {
+                const { data, error } = await authClient.signIn.email({
+                    email: formData.email,
+                    password: formData.password
+                });
+            } else {
+                const { data, error } = await authClient.signUp.email({
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                });
+            };
 
             await new Promise(resolve => setTimeout(resolve, 1500));
-            console.log('Form Submitted:', data);
             router.push(redirectTo);
         } catch (error) {
             setErrors({ submit: 'Authentication failed. Please check your credentials.' });
