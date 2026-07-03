@@ -7,7 +7,6 @@ import { useState } from 'react';
 
 export default function AuthForm({ isLogin }) {
     const {data:session} = authClient.useSession();
-    console.log(session);
     const [formData, setFormData] = useState(
         isLogin
             ? { email: '', password: '' }
