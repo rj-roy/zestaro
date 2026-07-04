@@ -59,28 +59,30 @@ import { Leaf, WheatOff, Flame } from "lucide-react";
 
 const filters = [
   { id: "vegetarian", label: "Vegetarian", icon: Leaf },
-  { id: "vegan", label: "Vegan", icon: Leaf },
+  { id: "sea-food", label: "Sea-Food", icon: Leaf },
   { id: "gluten-free", label: "Gluten-Free", icon: WheatOff },
   { id: "spicy", label: "Spicy", icon: Flame },
+  { id: "gluten", label: "Gluten", icon: Flame },
+  { id: "dairy", label: "Dairy", icon: Flame },
 ];
 
 export default function FilterTags({ query }) {
   return (
     <div className="flex flex-wrap gap-3 mb-8">
       {filters.map((filter) => {
-        const tags = query?.tags?.split(",") ?? [];
-        const isSelected = query?.tags?.toLowerCase().includes(filter.id);
+        const dietaryTags = query?.dietaryTags?.split(",") ?? [];
+        const isSelected = dietaryTags?.includes(filter.id);
 
-        const updatedTags = tags.includes(filter.id)
-          ? tags.filter(tag => tag !== filter.id)
-          : [...tags, filter.id];
+        const updatedTags = dietaryTags.includes(filter.id)
+          ? dietaryTags.filter(tag => tag !== filter.id)
+          : [...dietaryTags, filter.id];
 
         const params = new URLSearchParams(query);
 
         if (updatedTags.length) {
-          params.set("tags", updatedTags.join(","));
+          params.set("dietaryTags", updatedTags.join(","));
         } else {
-          params.delete("tags");
+          params.delete("dietaryTags");
         }
 
         const Icon = filter.icon;
