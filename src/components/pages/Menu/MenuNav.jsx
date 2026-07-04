@@ -28,9 +28,9 @@ export default function MenuNav() {
     ];
 
     return (
-        <nav className="flex min-h-screen w-xs flex-col h-full bg-tertiary dark:bg-secondary">
+        <nav className="flex min-h-screen max-w-xs flex-col h-full bg-tertiary dark:bg-secondary">
             {/* Header */}
-            <div className="px-6 pt-8 pb-6">
+            <div className="px-2 pt-8 pb-6">
                 <h1 className="text-3xl font-serif font-bold text-primary">
                     Zestaro
                 </h1>
