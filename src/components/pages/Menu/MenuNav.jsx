@@ -1,7 +1,4 @@
-'use client';
-
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
     UtensilsCrossed,
     ChefHat,
@@ -10,12 +7,19 @@ import {
     ShoppingCart,
     Info,
     Mail,
+    HandPlatter,
 } from 'lucide-react';
 
-export default function MenuNav() {
-    const pathname = usePathname();
+export default function MenuNav({activeMenu}) {
+    let active = ''
+    if(activeMenu === undefined){
+        active = 'all'
+    } else {
+        active = activeMenu;
+    };
 
     const menuCategories = [
+        { name: 'All', href: '/menu', icon: HandPlatter },
         { name: 'Starters', href: '/menu?category=starters', icon: UtensilsCrossed },
         { name: 'Mains', href: '/menu?category=mains', icon: ChefHat },
         { name: 'Drinks', href: '/menu?category=drinks', icon: Wine },
@@ -31,7 +35,7 @@ export default function MenuNav() {
         <nav className="flex min-h-screen max-w-xs flex-col h-full bg-tertiary dark:bg-secondary">
             {/* Header */}
             <div className="px-2 pt-8 pb-6">
-                <h1 className="text-3xl font-serif font-bold text-primary">
+                <h1 className="text-xl font-serif font-bold text-primary">
                     Zestaro
                 </h1>
                 <p className="text-sm text-neutral dark:text-neutral/80 mt-1">
@@ -43,7 +47,7 @@ export default function MenuNav() {
             <div className="flex-1 px-4 space-y-1">
                 {menuCategories.map((category) => {
                     const Icon = category.icon;
-                    const isActive = pathname === category.href;
+                    const isActive = active === category.name.toLowerCase();
 
                     return (
                         <Link

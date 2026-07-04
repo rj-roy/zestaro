@@ -30,7 +30,7 @@ export default function NavBar() {
                 <div className="flex h-20 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="shrink-0">
-                        <h1 className="text-2xl font-serif font-bold text-primary dark:text-primary">
+                        <h1 className="text-3xl font-serif font-bold text-primary dark:text-primary">
                             Zestaro
                         </h1>
                     </Link>
