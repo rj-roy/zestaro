@@ -16,10 +16,10 @@ export default function MenuNav() {
     const pathname = usePathname();
 
     const menuCategories = [
-        { name: 'Starters', href: '/menu?item=starters', icon: UtensilsCrossed },
-        { name: 'Mains', href: '/menu?item=mains', icon: ChefHat },
-        { name: 'Drinks', href: '/menu?item=drinks', icon: Wine },
-        { name: 'Desserts', href: '/menu?item=desserts', icon: IceCream },
+        { name: 'Starters', href: '/menu?category=starters', icon: UtensilsCrossed },
+        { name: 'Mains', href: '/menu?category=mains', icon: ChefHat },
+        { name: 'Drinks', href: '/menu?category=drinks', icon: Wine },
+        { name: 'Desserts', href: '/menu?category=desserts', icon: IceCream },
     ];
 
     const bottomLinks = [
