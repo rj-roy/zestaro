@@ -50,12 +50,12 @@ Zestaro is a full-stack restaurant website that lets customers browse the menu, 
 ## 3. Tech Stack (proposed, aligned with your existing stack)
 
 - **Frontend:** Next.js (App Router), Tailwind CSS
-- **Backend:** Express.js (separate service, ESM) or Next.js API routes if you want to keep it monolithic
+- **Backend:** Express.js (separate service, ESM), Node.js
 - **Database:** MongoDB (Mongoose)
 - **Auth:** better-auth (session-based)
 - **Payments:** Stripe (Checkout + webhooks, idempotent handling, invoice)
 - **File storage:** Cloudinary or S3 for menu images
-- **Hosting:** Vercel (frontend) + Render/Railway (backend) or a single VPS
+- **Hosting:** Vercel (frontend) + Railway (backend)
 - **Email:** Resend or Nodemailer + transactional templates (order confirmation, reservation confirmation)
 
 ---
