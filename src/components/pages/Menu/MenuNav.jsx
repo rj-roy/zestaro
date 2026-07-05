@@ -10,13 +10,8 @@ import {
     HandPlatter,
 } from 'lucide-react';
 
-export default function MenuNav({activeMenu}) {
-    let active = ''
-    if(activeMenu === undefined){
-        active = 'all'
-    } else {
-        active = activeMenu;
-    };
+export default function MenuNav({ activeMenu }) {
+    const active = activeMenu ?? 'all';
 
     const menuCategories = [
         { name: 'All', href: '/menu', icon: HandPlatter },
@@ -32,7 +27,7 @@ export default function MenuNav({activeMenu}) {
     ];
 
     return (
-        <nav className="flex min-h-screen max-w-xs flex-col h-full bg-tertiary dark:bg-secondary">
+        <nav className="md:fixed flex min-h-screen max-w-xs flex-col h-full bg-tertiary dark:bg-secondary">
             {/* Header */}
             <div className="px-2 pt-8 pb-6">
                 <h1 className="text-xl font-serif font-bold text-primary">
@@ -54,8 +49,8 @@ export default function MenuNav({activeMenu}) {
                             key={category.name}
                             href={category.href}
                             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                    ? 'bg-primary text-tertiary shadow-md'
-                                    : 'text-secondary dark:text-tertiary hover:bg-neutral/10 dark:hover:bg-neutral/20'
+                                ? 'bg-primary text-tertiary shadow-md'
+                                : 'text-secondary dark:text-tertiary hover:bg-neutral/10 dark:hover:bg-neutral/20'
                                 }`}
                         >
                             <Icon className="w-5 h-5" />

@@ -6,9 +6,9 @@ const MenuPage = async ({ searchParams }) => {
     const query = await searchParams;
     const params = new URLSearchParams(query);
     params.delete("search");
-    const menuItems = await getDataByQueryParams(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`)
+    const menuItems = await getDataByQueryParams(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
     return (
-        <div className="grid grid-cols-10 max-w-7xl mx-auto gap-3">
+        <div className="md:grid items-start grid-cols-10 max-w-7xl mx-auto gap-3">
             <div className="col-span-2">
                 <MenuNav activeMenu={query.category} />
             </div>
