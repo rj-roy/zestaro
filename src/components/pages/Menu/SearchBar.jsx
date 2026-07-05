@@ -16,13 +16,13 @@ export default async function SearchBar({ query }) {
                 type="text"
                 name="search"
                 defaultValue={query.search ?? ""}
-                placeholder="Search for dishes..."
-                className="w-full pl-12 pr-4 py-3 rounded-full bg-white dark:bg-neutral/20 border border-neutral/20 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-secondary dark:text-tertiary placeholder-neutral"
+                placeholder="Search for dishes name..."
+                className="w-full px-6 py-3 rounded-full bg-white dark:bg-neutral/20 border border-neutral/20 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-secondary dark:text-tertiary placeholder-neutral"
             />
 
             <button
                 type="submit"
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral hover:text-primary"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral hover:text-primary"
                 aria-label="Search"
             >
                 <Search className="w-5 h-5 text-primary/80 hover:text-primary cursor-pointer" />

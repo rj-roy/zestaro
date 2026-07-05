@@ -1,9 +1,5 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import MenuCard from './MenuCard';
 
-// Sample menu data - replace with API call
 const menuItems = [
   {
     id: 1,
@@ -35,30 +31,30 @@ const menuItems = [
   // Add more items...
 ];
 
-export default function MenuGrid({ category, filters, searchQuery, onAddToCart }) {
-  const [filteredItems, setFilteredItems] = useState([]);
+export default function MenuGrid({ menuItems }) {
+  // const [filteredItems, setFilteredItems] = useState([]);
 
-  useEffect(() => {
-    let items = menuItems.filter((item) => item.category === category);
+  // useEffect(() => {
+  //   let items = menuItems.filter((item) => item.category === category);
 
-    if (filters.length > 0) {
-      items = items.filter((item) =>
-        filters.every((filter) => item.dietaryTags.includes(filter))
-      );
-    }
+  //   if (filters.length > 0) {
+  //     items = items.filter((item) =>
+  //       filters.every((filter) => item.dietaryTags.includes(filter))
+  //     );
+  //   }
 
-    if (searchQuery) {
-      items = items.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+  //   if (searchQuery) {
+  //     items = items.filter(
+  //       (item) =>
+  //         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         item.description.toLowerCase().includes(searchQuery.toLowerCase())
+  //     );
+  //   }
 
-    setFilteredItems(items);
-  }, [category, filters, searchQuery]);
+  //   setFilteredItems(items);
+  // }, [category, filters, searchQuery]);
 
-  if (filteredItems.length === 0) {
+  if (menuItems.length === 0) {
     return (
       <div className="text-center py-16">
         <p className="text-neutral text-lg">No items match your criteria.</p>
@@ -68,8 +64,8 @@ export default function MenuGrid({ category, filters, searchQuery, onAddToCart }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredItems.map((item) => (
-        <MenuCard key={item.id} item={item} onAddToCart={onAddToCart} />
+      {menuItems.map((item, index) => (
+        <MenuCard key={index} item={item} />
       ))}
     </div>
   );

@@ -1,10 +1,7 @@
-// 'use client'
 import FilterTags from '@/components/pages/Menu/FilterTags';
-// import FloatingCart from '@/components/pages/Menu/FoatingCat';
-// import MenuGrid from '@/components/pages/Menu/MenuGrid';
+import MenuGrid from '@/components/pages/Menu/MenuGrid';
 import MenuHeader from '@/components/pages/Menu/MenuHeader';
 import SearchBar from '@/components/pages/Menu/SearchBar';
-// import { useState } from 'react';
 
 export default function MenuRoot({ menuItems, query }) {
     let activeCategory = '';
@@ -14,7 +11,18 @@ export default function MenuRoot({ menuItems, query }) {
         activeCategory = 'all';
     };
 
-    let searchValue = '';
+    let filteredItems = [];
+
+    if (query.search) {
+        filteredItems = menuItems?.filter((items) =>
+            items.name?.toLowerCase().includes(query?.search?.toLowerCase()) 
+            // || items.description.toLowerCase().includes(query?.search?.toLowerCase())
+        );
+    } else {
+        filteredItems = menuItems
+    };
+
+    // let searchValue = '';
 
     // const [selectedCategory, setSelectedCategory] = useState('starters');
     // const [selectedFilters, setSelectedFilters] = useState([]);
@@ -57,7 +65,6 @@ export default function MenuRoot({ menuItems, query }) {
                     />
                     <SearchBar
                         query={query}
-                        menuItems={menuItems}
                     />
                 </div>
 
@@ -65,13 +72,9 @@ export default function MenuRoot({ menuItems, query }) {
                     query={query}
                 />
 
-                {/* <MenuGrid
-                    category={selectedCategory}
-                    filters={selectedFilters}
-                    searchQuery={searchQuery}
-                    onAddToCart={addToCart}
-                    onUpdateQuantity={updateQuantity}
-                /> */}
+                <MenuGrid
+                    menuItems={filteredItems}
+                />
             </div>
 
             {/* <FloatingCart

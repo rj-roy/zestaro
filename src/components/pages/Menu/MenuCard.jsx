@@ -1,18 +1,15 @@
-'use client';
-
-import { useState } from 'react';
 import { Minus, Plus, ShoppingCart } from 'lucide-react';
 
-export default function MenuCard({ item, onAddToCart }) {
-  const [quantity, setQuantity] = useState(1);
+export default function MenuCard({ item }) {
+  // const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    onAddToCart({ ...item, quantity });
-    setQuantity(1);
-  };
+  // const handleAddToCart = () => {
+  //   onAddToCart({ ...item, quantity });
+  //   setQuantity(1);
+  // };
 
-  const increment = () => setQuantity(quantity + 1);
-  const decrement = () => setQuantity(Math.max(1, quantity - 1));
+  // const increment = () => setQuantity(quantity + 1);
+  // const decrement = () => setQuantity(Math.max(1, quantity - 1));
 
   const getDietaryLabel = (tag) => {
     const labels = {
@@ -60,17 +57,17 @@ export default function MenuCard({ item, onAddToCart }) {
         <div className="flex items-center gap-3 pt-2">
           <div className="flex items-center gap-3 bg-neutral/10 dark:bg-neutral/30 rounded-lg px-3 py-2">
             <button
-              onClick={decrement}
+              // onClick={decrement}
               className="p-1 hover:text-primary transition-colors"
-              disabled={quantity <= 1}
+              // disabled={quantity <= 1}
             >
               <Minus className="w-4 h-4" />
             </button>
             <span className="w-8 text-center font-semibold text-secondary dark:text-tertiary">
-              {quantity}
+              quantity
             </span>
             <button
-              onClick={increment}
+              // onClick={increment}
               className="p-1 hover:text-primary transition-colors"
             >
               <Plus className="w-4 h-4" />
@@ -78,7 +75,7 @@ export default function MenuCard({ item, onAddToCart }) {
           </div>
 
           <button
-            onClick={handleAddToCart}
+            // onClick={handleAddToCart}
             className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-tertiary px-4 py-2.5 rounded-lg font-semibold transition-all hover:shadow-lg active:scale-95"
           >
             <ShoppingCart className="w-4 h-4" />

@@ -7,7 +7,6 @@ const MenuPage = async ({ searchParams }) => {
     const params = new URLSearchParams(query);
     params.delete("search");
     const menuItems = await getDataByQueryParams(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`)
-    console.log(menuItems);
     return (
         <div className="grid grid-cols-10 max-w-7xl mx-auto gap-3">
             <div className="col-span-2">
