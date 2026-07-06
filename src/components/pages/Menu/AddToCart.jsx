@@ -27,11 +27,7 @@ export default function AddToCart({ itemId }) {
             >
                 <ShoppingCart className="w-4 h-4" />
 
-                {pending
-                    ? "Adding..."
-                    : state.added
-                        ? "Added"
-                        : "Add to Cart"}
+                {pending ? "Adding..." : state.added ? "Added to Cart" : "Add to Cart"}
             </button>
         </form>
     );

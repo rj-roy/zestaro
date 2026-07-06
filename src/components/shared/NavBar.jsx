@@ -68,6 +68,7 @@ export default function NavBar() {
                                                         alt="Profile Image"
                                                         width={500}
                                                         height={500}
+                                                        loading='eager'
                                                         className="rounded-full"
                                                     />
                                                 ) : (
