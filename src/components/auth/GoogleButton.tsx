@@ -1,7 +1,7 @@
 'use client'
 
-import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { authClient } from "../../lib/auth-client";
 
 export default function GoogleButton() {
     const searchParams = useSearchParams();

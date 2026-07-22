@@ -1,7 +1,8 @@
-import AuthFooter from '@/components/auth/AuthFooter';
-import AuthForm from '@/components/auth/AuthForm';
-import AuthTabs from '@/components/auth/AuthTabs';
-import GoogleButton from '@/components/auth/GoogleButton';
+import type { authParams } from '../../types/auth/authTypes';
+import AuthTabs from '../../components/auth/AuthTabs';
+import GoogleButton from '../../components/auth/GoogleButton';
+import AuthForm from '../../components/auth/AuthForm';
+import AuthFooter from '../../components/auth/AuthFooter';
 
 
 export const metadata = {
@@ -9,7 +10,7 @@ export const metadata = {
     descriptio: "Let's Pick Favourite Dish"
 };
 
-export default async function ZestaroAuth({ searchParams }) {
+export default async function ZestaroAuth({ searchParams }: authParams) {
     const params = await searchParams;
     const login = params.login;
     let isLogin = login === "true" ? true : false;

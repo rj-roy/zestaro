@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { User, Menu, X } from 'lucide-react';
 import ThemeSwitch from '../ui/ThemeSwitch';
 import Image from 'next/image';
+import type { userTypes } from '../../types/userTypes';
 import { authClient } from '@/lib/auth-client';
 
 export default function NavBar() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+    const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
     const { data: session } = authClient.useSession();
+    const user: userTypes | undefined = session?.user;
 
     const navLinks = [
         { name: 'Menu', href: '/menu' },
@@ -62,9 +64,9 @@ export default function NavBar() {
                                     <div className='flex justify-center items-center gap-2'>
                                         <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center">
                                             {
-                                                session?.user?.profileImage ? (
+                                                user?.profileImage ? (
                                                     <Image
-                                                        src={session?.user?.profileImage}
+                                                        src={user?.profileImage}
                                                         alt="Profile Image"
                                                         width={500}
                                                         height={500}
@@ -77,7 +79,7 @@ export default function NavBar() {
                                             }
                                         </div>
                                         <span className="hidden lg:block text-sm">
-                                            {session?.user?.name?.split(' ')[0] || 'User'}
+                                            {user?.name?.split(' ')[0] || 'User'}
                                         </span>
                                     </div>
                                 </button>
@@ -100,19 +102,19 @@ export default function NavBar() {
                                 {/* User Info */}
                                 <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                                     <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                                        {session?.user?.name || 'User'}
+                                        {user?.name || 'User'}
                                     </p>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                                        {session?.user?.email}
+                                        {user?.email}
                                     </p>
                                 </div>
 
                                 {/* Menu Items */}
                                 <div className="py-1 ml-auto text-right">
                                     <Link
-                                        href={`/dashboard/${session?.user?.role || 'seeker'}`}
+                                        href={`/dashboard/${user?.role || 'seeker'}`}
                                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                        onClick={() => setIsUserMenuOpen(false)}
+                                        onClick={() => setUserMenuOpen(false)}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -120,9 +122,9 @@ export default function NavBar() {
                                         Dashboard
                                     </Link>
                                     <Link
-                                        href={`/dashboard/${session?.user?.role}/profile`}
+                                        href={`/dashboard/${user?.role}/profile`}
                                         className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                        onClick={() => setIsUserMenuOpen(false)}
+                                        onClick={() => setUserMenuOpen(false)}
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -170,9 +172,9 @@ export default function NavBar() {
                                             <Link href={'/auth?login=true'} className='bg-secondary dark:bg-primary/70 hover:bg-primary rounded-2xl text-md p-1 px-3 flex justify-center items-center'>
                                                 Login
                                             </Link>
-                                            : session?.user?.profileImage ? (
+                                            : user?.profileImage ? (
                                                 <Image
-                                                    src={session?.user?.profileImage}
+                                                    src={user?.profileImage}
                                                     alt="Profile Image"
                                                     width={500}
                                                     height={500}
@@ -183,7 +185,7 @@ export default function NavBar() {
                                             )
                                     }
                                 </div>
-                                <span className="font-medium">{session?.user?.name}</span>
+                                <span className="font-medium">{user?.name}</span>
                             </button>
                             <ThemeSwitch />
                         </div>

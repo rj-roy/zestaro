@@ -1,7 +1,8 @@
 'use client'
 import { ThemeProvider } from "next-themes";
+import type React from "react";
 
-const ThemeProviderComponent = ({ children }) => {
+const ThemeProviderComponent = ({ children }: Readonly<{ children: React.ReactNode }>) => {
     return (
         <ThemeProvider
             attribute="class"

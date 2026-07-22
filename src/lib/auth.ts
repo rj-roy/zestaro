@@ -2,12 +2,12 @@ import { mongodbAdapter } from "@better-auth/mongo-adapter";
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.MONGO_URI);
-const db = client.db(process.env.MONGO_DB_NAME);
+const client = new MongoClient(process.env.MONGO_URI!);
+const db = client.db(process.env.MONGO_DB_NAME!);
 
 export const auth = betterAuth({
-    baseURL: process.env.BETTER_AUTH_BASE,
-    secret: process.env.BETTER_AUTH_SECRET,
+    baseURL: process.env.BETTER_AUTH_BASE!,
+    secret: process.env.BETTER_AUTH_SECRET!,
     database: mongodbAdapter(db, {
         client
     }),
@@ -18,8 +18,8 @@ export const auth = betterAuth({
 
     socialProviders: {
         google: {
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         },
     },
 
@@ -27,7 +27,7 @@ export const auth = betterAuth({
         additionalFields: {
             role: {
                 type: "string",
-                required: "true",
+                required: true,
                 defaultValue: "customer",
             },
             plan: {

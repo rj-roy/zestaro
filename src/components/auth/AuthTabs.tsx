@@ -1,5 +1,9 @@
 import Link from 'next/link';
-export default function AuthTabs({ isLogin }) {
+
+interface Props {
+    isLogin: boolean;
+}
+export default function AuthTabs({ isLogin }: Props) {
     return (
         <>
             <div className="flex border-b border-stone-200">

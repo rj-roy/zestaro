@@ -1,13 +1,24 @@
 'use client';
 
-import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { authClient } from '../../lib/auth-client';
+import type { userTypes } from '../../types/userTypes';
 
-export default function AuthForm({ isLogin }) {
+interface Props {
+    isLogin: boolean;
+};
+
+interface InputClass {
+    name?: string;
+    email?: string;
+    password?: string;
+};
+
+export default function AuthForm({ isLogin }: Props) {
     const { data: session } = authClient.useSession();
-    const [formData, setFormData] = useState(
+    const [formData, setFormData] = useState<userTypes>(
         isLogin
             ? { email: '', password: '' }
             : {
@@ -20,13 +31,13 @@ export default function AuthForm({ isLogin }) {
             }
     );
 
-    const [errors, setErrors] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get('redirect') || '/dashboard/profile';
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         if (errors[name]) {
@@ -35,13 +46,13 @@ export default function AuthForm({ isLogin }) {
     };
 
     const validateForm = () => {
-        const newErrors = {};
+        const newErrors: Record<string, string> = {};
 
-        if (!isLogin && !formData.name.trim()) {
+        if (!isLogin && !formData?.name?.trim()) {
             newErrors.name = 'Full name is required';
         }
 
-        if (!formData.email.trim()) {
+        if (!formData?.email?.trim()) {
             newErrors.email = 'Email is required';
         } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
             newErrors.email = 'Please enter a valid email address';
@@ -57,7 +68,7 @@ export default function AuthForm({ isLogin }) {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!validateForm()) {
             return;
@@ -67,6 +78,11 @@ export default function AuthForm({ isLogin }) {
         setErrors({});
 
         try {
+            if (!formData.email || !formData.password || !formData.name) {
+                // todo toast noti
+                return;
+            };
+
             if (isLogin) {
                 const { data, error } = await authClient.signIn.email({
                     email: formData.email,
@@ -89,7 +105,7 @@ export default function AuthForm({ isLogin }) {
         }
     };
 
-    const getInputClasses = (fieldName) => {
+    const getInputClasses = (fieldName : keyof InputClass) => {
         const baseClasses = "w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition bg-white text-stone-900 placeholder-stone-400";
         const errorClasses = errors[fieldName] ? "border-red-500 focus:ring-red-500" : "border-stone-300";
         return `${baseClasses} ${errorClasses}`;

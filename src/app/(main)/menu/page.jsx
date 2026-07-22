@@ -29,38 +29,15 @@ const MenuPage = async ({ searchParams }) => {
     };
 
     return (
-        <div className="md:grid items-start grid-cols-10 max-w-7xl mx-auto gap-3">
-            <aside className="col-span-2">
-                <MenuNav activeMenu={query.category} />
-            </aside>
-            <div className="col-span-8">
-                <div className="min-h-screen bg-tertiary dark:bg-secondary gap-3">
-                    <div className="px-4 sm:px-6 lg:px-2 py-8">
-                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-                            <MenuHeader
-                                category={activeCategory}
-                            />
-                            <SearchBar
-                                query={query}
-                            />
-                        </div>
-
-                        <FilterTags
-                            query={query}
-                        />
-
-                        <MenuGrid
-                            menuItems={filteredItems}
-                        />
-                    </div>
-
-                    {/* <FloatingCart
-                                items={cartItems}
-                                total={cartTotal}
-                                count={cartCount}
-                                onUpdateQuantity={updateQuantity}
-                            /> */}
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3">
+            <MenuNav activeMenu={query.category} />
+            <div className="min-w-0 min-h-screen bg-tertiary dark:bg-secondary gap-3 px-4 sm:px-6 lg:px-2 py-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+                    <MenuHeader category={activeCategory} />
+                    <SearchBar query={query} />
                 </div>
+                <FilterTags query={query} />
+                <MenuGrid menuItems={filteredItems} />
             </div>
         </div>
     );
