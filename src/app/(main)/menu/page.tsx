@@ -4,33 +4,36 @@ import MenuHeader from "@/components/pages/Menu/MenuHeader";
 import MenuNav from "@/components/pages/Menu/MenuNav";
 import SearchBar from "@/components/pages/Menu/SearchBar";
 import { getDataByQueryParams } from "@/lib/api/getData";
+import { MenuItem, MenuPageProps } from "@/types/MenuPage";
 
-const MenuPage = async ({ searchParams }) => {
+const getFirst = (value: string | string[] | undefined): string => {
+    if (Array.isArray(value)) return value[0] ?? '';
+    return value ?? '';
+};
+
+const MenuPage = async ({ searchParams }: MenuPageProps) => {
     const query = await searchParams;
-    const params = new URLSearchParams(query);
+    const params = new URLSearchParams(query as Record<string, string>);
+
     params.delete("search");
-    const menuItems = await getDataByQueryParams(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
+    const response = await getDataByQueryParams<MenuItem[]>(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
 
-    let activeCategory = '';
-    if (query?.category) {
-        activeCategory = query?.category;
-    } else {
-        activeCategory = 'all';
-    };
+    const activeCategory = getFirst(query?.category) || 'all';
 
-    let filteredItems = [];
+    const searchValue = getFirst(query.search);
+    let filteredItems: MenuItem[] = [];
 
-    if (query.search) {
-        filteredItems = menuItems?.filter((items) =>
-            items.name?.toLowerCase().includes(query?.search?.toLowerCase())
+    if (searchValue) {
+        filteredItems = (response.data ?? []).filter((item) =>
+            item.name?.toLowerCase().includes(searchValue.toLowerCase())
         );
     } else {
-        filteredItems = menuItems
+        filteredItems = response.data ?? [];
     };
 
     return (
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3">
-            <MenuNav activeMenu={query.category} />
+            <MenuNav activeMenu={activeCategory} />
             <div className="min-w-0 min-h-screen bg-tertiary dark:bg-secondary gap-3 px-4 sm:px-6 lg:px-2 py-8">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
                     <MenuHeader category={activeCategory} />

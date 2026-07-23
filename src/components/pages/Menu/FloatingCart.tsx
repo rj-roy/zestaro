@@ -3,8 +3,16 @@
 import { useState } from 'react';
 import { ShoppingBag, X, Minus, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { CartItemType } from '@/types/MenuPage';
 
-export default function FloatingCart({ items, total, count, onUpdateQuantity }) {
+interface FloatingCartProps {
+  items: CartItemType[];
+  total: number;
+  count: number;
+  onUpdateQuantity: (id: string, delta: number) => void;
+}
+
+export default function FloatingCart({ items, total, count, onUpdateQuantity }: FloatingCartProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (

@@ -1,15 +1,19 @@
 'use client';
 import { useActionState, useEffect, useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { handleAddToCart } from './handleAddToCart';
+import { handleAddToCart, CartActionState } from './handleAddToCart';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'react-toastify';
 
-const initialState = {
+const initialState: CartActionState = {
     added: false,
 };
 
-export default function AddToCart({ itemId }) {
+interface AddToCartProps {
+    itemId?: string;
+}
+
+export default function AddToCart({ itemId }: AddToCartProps) {
     const [localAdded, setLocalAdded] = useState(false);
     const { data: session } = authClient.useSession();
 
@@ -20,28 +24,28 @@ export default function AddToCart({ itemId }) {
 
     useEffect(() => {
         const update = () => {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            setLocalAdded(cart.includes(itemId));
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]') as string[];
+            setLocalAdded(cart.includes(itemId ?? ''));
         };
 
         update();
         window.addEventListener('storage', update);
         return () => window.removeEventListener('storage', update);
     }, [itemId]);
-    
-    const handleSubmit = (e) => {
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         if (session) return;
         e.preventDefault();
 
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]') as string[];
 
-        if (!cart.includes(itemId)) {
-            cart.push(itemId);
-        };
+        if (!cart.includes(itemId ?? '')) {
+            cart.push(itemId ?? '');
+        }
 
         localStorage.setItem('cart', JSON.stringify(cart));
-        toast.success("Item added to cart")
-        setLocalAdded(cart.includes(itemId));
+        toast.success("Item added to cart");
+        setLocalAdded(cart.includes(itemId ?? ''));
     };
 
     return (
@@ -50,7 +54,7 @@ export default function AddToCart({ itemId }) {
             onSubmit={handleSubmit}
             className="flex items-center gap-3 pt-2 w-full"
         >
-            <input type="hidden" name="productId" value={itemId} />
+            <input type="hidden" name="productId" value={itemId ?? ''} />
 
             <button
                 type="submit"

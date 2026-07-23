@@ -7,8 +7,6 @@ export default async function Home() {
     headers: await headers()
   });
 
-  console.log(session, 'root');
-
   return (
     <div>
       ldfkj

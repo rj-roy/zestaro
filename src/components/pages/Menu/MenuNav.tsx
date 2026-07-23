@@ -11,14 +11,25 @@ import {
     HandPlatter,
     ChevronLeft,
     ChevronRight,
+    type LucideIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 
-export default function MenuNav({ activeMenu }) {
+interface MenuNavProps {
+  activeMenu: string;
+}
+
+interface NavItem {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+}
+
+export default function MenuNav({ activeMenu }: MenuNavProps) {
     const [isOpen, setIsOpen] = useState(false);
     const active = activeMenu ?? 'all';
 
-    const menuCategories = [
+    const menuCategories: NavItem[] = [
         { name: 'All', href: '/menu', icon: HandPlatter },
         { name: 'Starters', href: '/menu?category=starters', icon: UtensilsCrossed },
         { name: 'Mains', href: '/menu?category=mains', icon: ChefHat },
@@ -26,7 +37,7 @@ export default function MenuNav({ activeMenu }) {
         { name: 'Desserts', href: '/menu?category=desserts', icon: IceCream },
     ];
 
-    const bottomLinks = [
+    const bottomLinks: NavItem[] = [
         { name: 'Dietary Info', href: '/menu/dietary-info', icon: Info },
         { name: 'Contact', href: '/menu/contact', icon: Mail },
     ];

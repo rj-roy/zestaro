@@ -12,7 +12,6 @@ export default function NavBar() {
     const [userMenuOpen, setUserMenuOpen] = useState<boolean>(false);
     const { data: session } = authClient.useSession();
     const user: userTypes | undefined = session?.user;
-    console.log(session, 'session');
 
     const navLinks = [
         { name: 'Menu', href: '/menu' },
