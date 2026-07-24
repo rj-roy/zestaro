@@ -2,6 +2,7 @@ import FilterTags from "@/components/pages/Menu/FilterTags";
 import MenuGrid from "@/components/pages/Menu/MenuGrid";
 import MenuHeader from "@/components/pages/Menu/MenuHeader";
 import MenuNav from "@/components/pages/Menu/MenuNav";
+import PagePagination from "@/components/pages/Menu/PagePagination";
 import SearchBar from "@/components/pages/Menu/SearchBar";
 import { getDataByQueryParams } from "@/lib/api/getData";
 import { MenuItem, MenuPageProps } from "@/types/MenuPage";
@@ -17,8 +18,18 @@ const MenuPage = async ({ searchParams }: MenuPageProps) => {
     params.delete("search");
 
     const response = await getDataByQueryParams<MenuItem[]>(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
-    const headers = response.headers;
-    console.log(headers);
+    const headers = response?.headers;
+
+    const totalCount = parseInt(headers?.get("X-Total-Count") ?? "0", 10);
+    const totalPages = parseInt(headers?.get("X-Total-Pages") ?? "1", 10);
+    const currentPage = parseInt(headers?.get("X-Current-Page") ?? "1", 10);
+
+    const paginationParams: Record<string, string> = {};
+    if (query) {
+        for (const [key, value] of Object.entries(query as Record<string, string>)) {
+            if (key !== 'page') paginationParams[key] = value;
+        }
+    }
 
     const activeCategory = getFirst(query?.category) || 'all';
 
@@ -43,6 +54,9 @@ const MenuPage = async ({ searchParams }: MenuPageProps) => {
                 </div>
                 <FilterTags query={query} />
                 <MenuGrid menuItems={filteredItems} />
+                <div>
+                    <PagePagination currentPage={currentPage} totalPages={totalPages} searchParams={paginationParams} />
+                </div>
             </div>
         </div>
     );
