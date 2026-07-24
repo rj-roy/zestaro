@@ -14,10 +14,11 @@ const getFirst = (value: string | string[] | undefined): string => {
 const MenuPage = async ({ searchParams }: MenuPageProps) => {
     const query = await searchParams;
     const params = new URLSearchParams(query as Record<string, string>);
-
     params.delete("search");
 
     const response = await getDataByQueryParams<MenuItem[]>(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
+    const headers = response.headers;
+    console.log(headers);
 
     const activeCategory = getFirst(query?.category) || 'all';
 
