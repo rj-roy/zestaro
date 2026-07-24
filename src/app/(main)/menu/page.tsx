@@ -16,6 +16,7 @@ const MenuPage = async ({ searchParams }: MenuPageProps) => {
     const params = new URLSearchParams(query as Record<string, string>);
 
     params.delete("search");
+
     const response = await getDataByQueryParams<MenuItem[]>(`/api/v1/get/menu/query?${params.toString() ? `${params}` : ""}`);
 
     const activeCategory = getFirst(query?.category) || 'all';

@@ -1,18 +1,23 @@
 import { ApiResponse } from "@/types/ApiResponse";
 import { redirect } from "next/navigation";
 
-export const statusHandler = async <T>(
-  res: Response
-): Promise<ApiResponse<T>> => {
-  if (res.status === 401) redirect("/unauthorized");
-  if (res.status === 403) redirect("/forbidden");
-  if (res.status === 404) redirect("/not-found");
+export const statusHandler = async <T>(res: Response): Promise<ApiResponse<T>> => {
+  const redirectMap: Record<number, string> = {
+    401: "/unauthorized",
+    403: "/forbidden",
+  };
+
+  const path = redirectMap[res.status];
+
+  if (path) {
+    redirect(path);
+  }
 
   const result = (await res.json()) as ApiResponse<T>;
 
   if (!res.ok) {
-    throw new Error(result.message);
-  }
+    return { success: false, message: result.message };
+  };
 
   return result;
 };

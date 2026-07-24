@@ -44,7 +44,7 @@ export default function MenuNav({ activeMenu }: MenuNavProps) {
 
     return (
         <aside className='fixed z-99'>
-            <div className='relative w-full bg-tertiary dark:bg-secondary md:min-h-screen md:border-r md:border-neutral/20 md:shadow-sm'>
+            <div className='relative w-full bg-tertiary dark:bg-secondary md:min-h-screen md:shadow-sm'>
                 {
                     isOpen && (
                         <button
