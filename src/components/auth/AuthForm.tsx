@@ -78,8 +78,7 @@ export default function AuthForm({ isLogin }: Props) {
         setErrors({});
 
         try {
-            if (!formData.email || !formData.password || !formData.name) {
-                // todo toast noti
+            if (!formData.email || !formData.password) {
                 return;
             };
 
@@ -90,9 +89,9 @@ export default function AuthForm({ isLogin }: Props) {
                 });
             } else {
                 const { data, error } = await authClient.signUp.email({
-                    name: formData.name,
-                    email: formData.email,
-                    password: formData.password,
+                    name: formData.name!,
+                    email: formData.email!,
+                    password: formData.password!,
                 });
             };
 
@@ -201,7 +200,7 @@ export default function AuthForm({ isLogin }: Props) {
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-stone-900 text-white py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors shadow-md mt-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-stone-900 text-white py-3 rounded-lg font-medium hover:bg-stone-800 transition-colors shadow-md mt-6 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center cursor-pointer"
             >
                 {isLoading ? (
                     <span className="flex items-center gap-2">

@@ -44,7 +44,7 @@ export default function MenuCard({ item }: MenuCardProps) {
 
         {/* Quantity Selector & Add to Cart */}
         <div className="flex items-center gap-3 pt-2">
-          <AddToCart itemId={item._id} />
+          <AddToCart itemId={item._id} itemName={item.name} />
         </div>
       </div>
     </div>

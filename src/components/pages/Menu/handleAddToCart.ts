@@ -10,6 +10,7 @@ export async function handleAddToCart(prevState: CartActionState, formData: Form
   const session = await userSession();
   const productId = formData.get('productId') as string;
 
+  console.log(productId);
   // Add to cart logic here
   // await db.cart.insertOne({ productId });
 
