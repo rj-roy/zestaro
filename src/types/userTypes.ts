@@ -9,4 +9,5 @@ export interface userTypes {
     role?: string;
     plan?: string;
     profileImage?: string;
+    id?: string;
 }

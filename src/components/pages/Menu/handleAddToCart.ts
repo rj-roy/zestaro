@@ -1,6 +1,7 @@
 'use server';
-
+import { serverMutation } from "@/lib/core/server";
 import { userSession } from "@/lib/core/session";
+import { userTypes } from "@/types/userTypes";
 
 export interface CartActionState {
   added: boolean;
@@ -8,13 +9,17 @@ export interface CartActionState {
 
 export async function handleAddToCart(prevState: CartActionState, formData: FormData): Promise<CartActionState> {
   const session = await userSession();
-  const productId = formData.get('productId') as string;
+  const { id, name } = session?.user as userTypes;
 
-  console.log(productId);
-  // Add to cart logic here
-  // await db.cart.insertOne({ productId });
+  const checkedItem = formData.get('checkedItem');
+  const localCart = formData.get('localCart')
+  const data = { userId: id, userName: name, checkedItem: checkedItem, localCart }
 
-  return {
-    added: true,
+  const createCart = await serverMutation('/api/v1/cart/create', data, 'POST')
+  
+  if (!createCart.success) {
+    return { added: false };
   };
-}
+
+  return { added: true };
+};

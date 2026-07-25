@@ -4,6 +4,7 @@ import { ShoppingCart } from 'lucide-react';
 import { handleAddToCart, CartActionState } from './handleAddToCart';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'react-toastify';
+import { LocalCartItem } from '@/types/LocalCartItem';
 
 const initialState: CartActionState = {
     added: false,
@@ -14,11 +15,6 @@ interface AddToCartProps {
     itemName?: string;
 }
 
-type CartItem = {
-    id: string;
-    name: string;
-};
-
 export default function AddToCart({ itemId, itemName }: AddToCartProps) {
     const [localAdded, setLocalAdded] = useState(false);
     const { data: session } = authClient.useSession();
@@ -28,8 +24,8 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
 
     useEffect(() => {
         const update = () => {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
-            setLocalAdded(cart.some((item) => item.id === itemId));
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
+            setLocalAdded(cart.some((item) => item.itemId === itemId));
         };
 
         update();
@@ -39,21 +35,27 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
 
         if (session) {
+            const form = new FormData(e.currentTarget);
+
+            const localCart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
+            if (localCart.length > 0) {
+                form.set('localCart', JSON.stringify(localCart));
+            }
+
             startTransition(() => {
-                formAction(new FormData(e.currentTarget));
+                formAction(form);
             });
+            
             return;
         }
 
-        const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
-        const id = itemId ?? '';
-        const name = itemName ?? '';
-        const alreadyInCart = cart.some((item) => item.id === id);
+        const alreadyInCart = cart.some((item) => item.itemId === itemId);
 
         if (!alreadyInCart) {
-            cart.push({ id, name });
+            cart.push({ itemId, itemName });
         }
 
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -61,17 +63,22 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
         setLocalAdded(true);
     };
 
+    useEffect(() => {
+        if (state.added) {
+            localStorage.removeItem('cart');
+            toast.success("Item Added to cart.")
+        }
+    }, [state]);
+
     const isAdded = state.added || localAdded;
     const disabled = pending || isAdded || !itemId;
 
     return (
         <form
-            action={formAction}
             onSubmit={handleSubmit}
             className="flex items-center gap-3 pt-2 w-full"
         >
-            <input type="hidden" name="productId" value={itemId ?? ''} />
-            <input type="hidden" name="productId" value={itemName ?? ''} />
+            <input type="hidden" name="checkedItem" value={JSON.stringify({ itemId, itemName })} />
 
             <button
                 type="submit"
