@@ -22,3 +22,7 @@ export interface CartItemType {
   image: string;
   quantity: number;
 }
+
+export interface CartItemsData {
+    cartItemIds: string[];
+};

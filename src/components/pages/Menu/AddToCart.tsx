@@ -2,7 +2,6 @@
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { handleAddToCart, CartActionState } from './handleAddToCart';
-import { authClient } from '@/lib/auth-client';
 import { toast } from 'react-toastify';
 import { LocalCartItem } from '@/types/LocalCartItem';
 
@@ -13,11 +12,12 @@ const initialState: CartActionState = {
 interface AddToCartProps {
     itemId?: string;
     itemName?: string;
+    isExistInDbCart: boolean;
+    userId: string;
 }
 
-export default function AddToCart({ itemId, itemName }: AddToCartProps) {
+export default function AddToCart({ itemId, itemName, isExistInDbCart, userId }: AddToCartProps) {
     const [localAdded, setLocalAdded] = useState(false);
-    const { data: session } = authClient.useSession();
 
     const [state, formAction, pending] = useActionState(handleAddToCart, initialState);
     const [, startTransition] = useTransition();
@@ -37,26 +37,22 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
         e.preventDefault();
         const cart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
 
-        if (session) {
+        if (userId) {
             const form = new FormData(e.currentTarget);
 
             const localCart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
             if (localCart.length > 0) {
                 form.set('localCart', JSON.stringify(localCart));
-            }
+            };
 
-            startTransition(() => {
-                formAction(form);
-            });
-            
+            startTransition(() => { formAction(form); });
             return;
-        }
+        };
 
         const alreadyInCart = cart.some((item) => item.itemId === itemId);
-
         if (!alreadyInCart) {
             cart.push({ itemId, itemName });
-        }
+        };
 
         localStorage.setItem('cart', JSON.stringify(cart));
         toast.success('Item added to cart');
@@ -70,8 +66,7 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
         }
     }, [state]);
 
-    const isAdded = state.added || localAdded;
-    const disabled = pending || isAdded || !itemId;
+    const isAdded = isExistInDbCart || localAdded || state.added;
 
     return (
         <form
@@ -82,12 +77,12 @@ export default function AddToCart({ itemId, itemName }: AddToCartProps) {
 
             <button
                 type="submit"
-                disabled={pending || state.added || localAdded}
+                disabled={pending || isAdded}
                 className={`disabled:bg-secondary disabled:cursor-not-allowed cursor-pointer flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-tertiary px-4 py-2.5 rounded-lg font-semibold transition-all hover:shadow-lg active:scale-95 disabled:opacity-70`}
             >
                 <ShoppingCart className="w-4 h-4" />
 
-                {pending ? "Adding..." : state.added || localAdded ? "Added to Cart" : "Add to Cart"}
+                {pending ? "Adding..." : isAdded ? "Added to Cart" : "Add to Cart"}
             </button>
         </form>
     );
