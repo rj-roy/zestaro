@@ -6,6 +6,7 @@ import ThemeSwitch from '../ui/ThemeSwitch';
 import Image from 'next/image';
 import type { userTypes } from '../../types/userTypes';
 import { authClient } from '@/lib/auth-client';
+import FloatingCart from '../ui/cart/FloatingCart';
 
 export default function NavBar() {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -50,7 +51,10 @@ export default function NavBar() {
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-2 relative">
+                    <div className="flex items-center gap-0.5 relative">
+                        <div className='mx-6'>
+                            <FloatingCart forNav={true}/>
+                        </div>
                         <div className='hidden md:block'>
                             <ThemeSwitch />
                         </div>
@@ -78,9 +82,6 @@ export default function NavBar() {
                                                 )
                                             }
                                         </div>
-                                        <span className="hidden lg:block text-sm">
-                                            {user?.name?.split(' ')[0] || 'User'}
-                                        </span>
                                     </div>
                                 </button>
                         }
