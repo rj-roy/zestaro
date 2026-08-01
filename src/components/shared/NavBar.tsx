@@ -61,7 +61,7 @@ export default function NavBar() {
 
                         {
                             !session ?
-                                <Link href={'/auth?login=true'} className='bg-secondary dark:bg-primary/70 hover:bg-primary rounded-2xl text-md p-1 px-3 flex justify-center items-center'>
+                                <Link href={'/auth?login=true'} className='bg-primary dark:bg-primary/70 hover:bg-primary rounded-2xl text-md p-1 px-3 flex justify-center items-center'>
                                     Login
                                 </Link>
                                 : <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="p-2 rounded-lg text-secondary dark:text-tertiary hover:bg-neutral/10 dark:hover:bg-neutral/20 transition-colors">

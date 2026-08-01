@@ -23,7 +23,7 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
           src={item.imageUrl ?? ''}
           alt={item.name ?? ''}
           height={200}
-          loading='lazy'
+          loading='eager'
           width={200}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />

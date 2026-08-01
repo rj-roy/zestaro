@@ -35,7 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <div>
             {children}
           </div>
-          <div className="fixed bottom-6 right-6">
+          <div className="fixed bottom-6 right-6 z-60">
             <FloatingCart forNav={false}/>
           </div>
         </ThemeProviderComponent>

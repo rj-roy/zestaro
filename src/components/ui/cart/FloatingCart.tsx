@@ -1,6 +1,8 @@
 'use client';
 import { getDataByQueryParams } from '@/lib/api/getData';
 import { authClient } from '@/lib/auth-client';
+import { serverMutation } from '@/lib/core/server';
+import { LocalCartItem } from '@/types/LocalCartItem';
 import { CartCountData, CartItemType } from '@/types/MenuPage';
 import { MinusIcon, PaperBag, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
@@ -22,28 +24,61 @@ const isCartItemsData = (data: CartResponse | null | undefined): data is CartIte
 export default function FloatingCart({ forNav }: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartData, setCartData] = useState<CartItemType[]>([]);
+  const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   const [cartCount, setCartCount] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
   const { data: session } = authClient.useSession();
+  const id = session?.user.id;
+  const name = session?.user.name;
 
   useEffect(() => {
-    if (!session?.user.id) return;
-    const controller = new AbortController();
+    if (id) return;
 
-    getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=${isOpen ? "items" : "count"}&userId=${session.user.id}`, controller.signal)
+    const localCart = JSON.parse(localStorage.getItem("cart") || '[]') as LocalCartItem[];
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalCart(localCart);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    const pushLocalData = async () => {
+      if (localCart.length > 0) {
+        const data = JSON.stringify(localCart)
+        console.log(data);
+        const res = await serverMutation('/api/v1/cart/create', { userId: id, userName: name, checkedItem: "[]", localCart: data }, "POST");
+        console.log(res);
+        if (!res.success) return;
+        localStorage.removeItem('cart');
+        return res;
+      };
+
+    };
+
+    if (id) {
+      pushLocalData();
+    };
+
+    const controller = new AbortController();
+    getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=${isOpen ? "items" : "count"}&userId=${id}`, controller.signal)
       .then(({ data }) => {
         if (isCartItemsData(data)) {
           setCartData(data.cartItems ?? [])
         } else if (data) {
-          setCartCount({
-            cartLength: data.cartLength,
-            totalPrice: data.totalPrice,
-          })
+          setCartCount({ cartLength: data.cartLength, totalPrice: data.totalPrice })
         }
       })
       .catch(() => { });
     return () => controller.abort();
+  }, [isOpen, id, localCart, name])
 
-  }, [isOpen, session?.user.id])
+
+  const realCartData = session ? cartData : localCart;
+
+  const drawerTotal = realCartData.reduce((total, item) => {
+    return total + (item?.itemPrice ?? 0);
+  }, 0);
+
+  const cartLength = session ? cartCount.cartLength : localCart.length;
+  const totalPrice = session ? cartCount.totalPrice : drawerTotal
 
   return (
     <>
@@ -53,7 +88,7 @@ export default function FloatingCart({ forNav }: PropsType) {
             <div className="">
               <PaperBag size={30} />
             </div>
-            <span className="absolute -top-1 -right-2 border-2 bg-white dark:bg-black border-primary rounded-full p-1 text-[9px]">{cartCount.cartLength}</span>
+            <span className="absolute -top-1 -right-2 border-2 bg-white dark:bg-black border-primary rounded-full p-1 text-[9px]">{cartLength}</span>
           </Link>
         ) : (
           <button
@@ -63,11 +98,11 @@ export default function FloatingCart({ forNav }: PropsType) {
             <div className="relative">
               <ShoppingBag />
               <span className="absolute -top-2 -right-2 w-5 h-5 border border-primary bg-secondary dark:bg-tertiary  text-xs font-bold rounded-full flex items-center justify-center text-primary">
-                {cartCount.cartLength}
+                {cartLength}
               </span>
             </div>
             <div className="text-left">
-              <p className="text-lg font-bold">${cartCount.totalPrice}</p>
+              <p className="text-lg font-bold">${totalPrice}</p>
             </div>
           </button>
         )
@@ -94,42 +129,41 @@ export default function FloatingCart({ forNav }: PropsType) {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {cartData.slice(0, 11).map((item, idx) => (
-                <div key={idx} className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-secondary dark:text-tertiary">
-                      {item.itemName}
-                    </h4>
-                    <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
-                    <div className="flex items-center gap-3 mt-2">
-                      <button className="p-1 hover:text-primary transition-colors">
-                        <MinusIcon />
-                      </button>
-                      <span className="font-semibold w-6 text-center">{item.quantity ?? 1}</span>
-                      <button className="p-1 hover:text-primary transition-colors">
-                        <Plus />
-                      </button>
-                      <button className="ml-auto p-1 text-red-500 hover:text-red-600">
-                        <Trash2 size={15} />
-                      </button>
+              {realCartData.length <= 0 ? (
+                <div className='h-full flex justify-center items-center text-center flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl'>
+                  Your Cart Is Empty
+                </div>
+              ) : (
+                realCartData.map((item, idx) => (
+                  <div key={idx} className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-secondary dark:text-tertiary">
+                        {item.itemName}
+                      </h4>
+                      <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
+                      <div className="flex items-center gap-3 mt-2">
+                        <button className="p-1 hover:text-primary transition-colors">
+                          <MinusIcon />
+                        </button>
+                        <span className="font-semibold w-6 text-center">{item.quantity ?? 1}</span>
+                        <button className="p-1 hover:text-primary transition-colors">
+                          <Plus />
+                        </button>
+                        <button className="ml-auto p-1 text-red-500 hover:text-red-600">
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-
-              <Link
-                className="font-bold border border-primary my-4 w-25 flex justify-center items-center ml-auto mr-5 rounded-4xl p-1 px-2"
-                href={'/cart'}
-              >
-                See All...
-              </Link>
+                ))
+              )}
             </div>
 
             <div className="shrink-0 border-t border-neutral/20 p-6 space-y-4 justify-end items-end">
               <div className="flex justify-between items-center text-lg">
                 <span className="text-neutral">Subtotal</span>
                 <span className="font-bold text-secondary dark:text-tertiary">
-                  $45.00
+                  {drawerTotal}
                 </span>
               </div>
               <Link
