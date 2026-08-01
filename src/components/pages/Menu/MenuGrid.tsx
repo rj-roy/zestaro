@@ -8,7 +8,6 @@ interface MenuGridProps {
 
 export default async function MenuGrid({ menuItems }: MenuGridProps) {
   const session = await userSession();
-  const userId = session?.user.id;
 
   if (menuItems.length === 0) {
     return (
@@ -21,7 +20,7 @@ export default async function MenuGrid({ menuItems }: MenuGridProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {menuItems.map((item, index) => (
-        <MenuCard key={item._id ?? index} item={item} userId={userId as string} />
+        <MenuCard key={item._id ?? index} item={item} userId={session?.user.id as string} />
       ))}
     </div>
   );

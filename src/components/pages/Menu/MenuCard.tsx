@@ -22,9 +22,9 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
         <Image
           src={item.imageUrl ?? ''}
           alt={item.name ?? ''}
-          height={500}
-          loading='eager'
-          width={500}
+          height={200}
+          loading='lazy'
+          width={200}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
         <div className="absolute top-4 right-4 flex gap-2">
@@ -52,7 +52,7 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
 
         {/* Quantity Selector & Add to Cart */}
         <div className="flex items-center gap-3 pt-2">
-          <AddToCart itemId={item._id} itemName={item.name} isExistInDbCart={isExistInDbCart} userId={userId} />
+          <AddToCart itemId={item._id} itemName={item.name} itemPrice={item.price} isExistInDbCart={isExistInDbCart} userId={userId} />
         </div>
       </div>
     </div>

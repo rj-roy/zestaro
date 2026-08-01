@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import React from "react";
 import ThemeProviderComponent from "../components/providers/ThemeProviderComponent";
 import NavBar from "../components/shared/NavBar";
+import FloatingCart from "@/components/ui/cart/FloatingCart";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <NavBar />
           <div>
             {children}
+          </div>
+          <div>
+            <FloatingCart/>
           </div>
         </ThemeProviderComponent>
       </body>
