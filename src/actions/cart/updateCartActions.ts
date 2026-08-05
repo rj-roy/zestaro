@@ -4,6 +4,5 @@ export const increaseItemQantity = async (itemId?: string) => {
 };
 
 export const decreaseItemQuantity = async (itemId?: string) => {
-    console.log('count --');
-    return true;
+return true    
 };

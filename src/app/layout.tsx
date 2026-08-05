@@ -5,6 +5,7 @@ import React from "react";
 import ThemeProviderComponent from "../components/providers/ThemeProviderComponent";
 import NavBar from "../components/shared/NavBar";
 import FloatingCart from "@/components/ui/cart/FloatingCart";
+import { CartProvider } from "@/components/providers/CartProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +32,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-full flex flex-col bg-tertiary dark:bg-secondary">
         <ThemeProviderComponent>
           <ToastContainer />
-          <NavBar />
-          <div>
-            {children}
-          </div>
-          <div className="fixed bottom-6 right-6 z-60">
-            <FloatingCart forNav={false}/>
-          </div>
+          <CartProvider>
+            <NavBar />
+            <div>
+              {children}
+            </div>
+            <div className="fixed bottom-6 right-6 z-60">
+              <FloatingCart forNav={false} />
+            </div>
+          </CartProvider>
         </ThemeProviderComponent>
       </body>
     </html>

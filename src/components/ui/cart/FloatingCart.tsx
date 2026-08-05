@@ -1,4 +1,5 @@
 'use client';
+import { useCart } from '@/components/providers/CartProvider';
 import { getDataByQueryParams } from '@/lib/api/getData';
 import { authClient } from '@/lib/auth-client';
 import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
@@ -26,37 +27,34 @@ export default function FloatingCart({ forNav }: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [cartData, setCartData] = useState<CartItemType[]>([]);
   const [localCart, setLocalCart] = useState<CartItemType[]>([]);
-  const [cartCount, setCartCount] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
+  const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
 
+  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems } = useCart();
+
+  useEffect(() => {
+    console.log("Component:", cartItems);
+  }, [cartItems]);
+  
   const { data: session } = authClient.useSession();
   const id = session?.user.id;
   const name = session?.user.name;
   const loggedIn = session ? true : false;
   const realCartData = session ? cartData : localCart;
 
-  const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData, 
-    (state, action:{itemId: string, quantity: number}) => {
-      const {itemId, quantity} = action;
-      return state.map(item => item.itemId === itemId ? {...item, quantity} : item)
+  const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
+    (state, action: { itemId: string, quantity: number }) => {
+      const { itemId, quantity } = action;
+      return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
     },
   );
-
-  // const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
-  //   (state, { itemId, quantity }) => {
-  //     return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
-  //   },
-  // );
-
-  // const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
-  //   (state, { itemId, quantity }: { itemId: string, quantity: number }) => {
-  //     return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
-  //   });
 
   const handleUpdateCartQ = async (itemId: string, delta: number, currentQuantity: number, option: string) => {
     let updated = false;
 
-    if(option === "inc"){
+    if (option === "incr") {
       updated = await increaseItemQuantityHelper(itemId, loggedIn);
+    } else {
+      updated = await decreaseItemQuantityHelper(itemId, loggedIn);
     };
 
     startTransition(() => {
@@ -75,6 +73,9 @@ export default function FloatingCart({ forNav }: PropsType) {
 
   useEffect(() => {
     if (!id) return;
+    syncDeriveCount();
+    syncItems();
+
     const pushLocalData = async () => {
       if (localCart.length > 0) {
 
@@ -97,17 +98,17 @@ export default function FloatingCart({ forNav }: PropsType) {
       .then(({ data }) => {
         if (isCartItemsData(data)) {
           setCartData(data.cartItems ?? [])
-          console.log(data);
+          // console.log(data);
         } else if (data) {
-          setCartCount({ cartLength: data.cartLength, totalPrice: data.totalPrice })
+          setCartCounts({ cartLength: data.cartLength, totalPrice: data.totalPrice })
         }
       })
       .catch(() => { });
     return () => controller.abort();
-  }, [isOpen, id, localCart, name])
+  }, [isOpen, id, localCart, name, syncDeriveCount])
 
 
-  const drawerTotal = realCartData.reduce((total, item) => {
+  const drawerTotal = cartItems.reduce((total, item) => {
     return total + Number(item?.itemPrice ?? 0);
   }, 0);
 
@@ -163,12 +164,12 @@ export default function FloatingCart({ forNav }: PropsType) {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {optimisticCart.length <= 0 ? (
+              {cartItems.length <= 0 ? (
                 <div className='h-full flex justify-center items-center text-center flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl'>
                   Your Cart Is Empty
                 </div>
               ) : (
-                optimisticCart.map((item, idx) => (
+                cartItems.map((item, idx) => (
                   <div key={idx} className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl">
                     <div className="flex-1">
                       <h4 className="font-semibold text-secondary dark:text-tertiary">

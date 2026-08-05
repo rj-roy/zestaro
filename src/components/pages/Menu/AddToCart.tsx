@@ -4,17 +4,18 @@ import { ShoppingCart } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { LocalCartItem } from '@/types/LocalCartItem';
 import { addCartAction, CartActionState } from '@/actions/cart/addCartActions';
+import { useCart } from '@/components/providers/CartProvider';
 
 const initialState: CartActionState = {
     added: false,
 };
 
 interface AddToCartProps {
-    itemId?: string;
-    itemName?: string;
+    itemId: string;
+    itemName: string;
     isExistInDbCart?: boolean;
     userId?: string;
-    itemPrice?: number;
+    itemPrice: number;
 }
 
 export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart, userId }: AddToCartProps) {
@@ -22,6 +23,7 @@ export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart
 
     const [state, formAction, pending] = useActionState(addCartAction, initialState);
     const [, startTransition] = useTransition();
+    const { syncDeriveCount } = useCart();
 
     useEffect(() => {
         const update = () => {
@@ -62,10 +64,11 @@ export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart
 
     useEffect(() => {
         if (state.added) {
+            syncDeriveCount()
             localStorage.removeItem('cart');
             toast.success("Item Added to cart.")
         }
-    }, [state]);
+    }, [state, syncDeriveCount]);
 
     const isAdded = isExistInDbCart || localAdded || state.added;
 

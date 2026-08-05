@@ -23,10 +23,19 @@ export interface CartItemType {
 }
 
 export type CartCountData = {
-  cartLength?: number;
-  totalPrice?: number;
+  cartLength: number;
+  totalPrice: number;
 }
 
-export interface CartItemsData {
-  cartItemIds: string[];
+// export interface CartItemsData {
+//   cartItems: CartItemType[];
+//   cartItemIds: string[];
+// };
+
+export interface CartContextValue {
+  cartItems: CartItemType[];
+  cartCount: CartCountData;
+  syncGuest: () => void;
+  syncDeriveCount: () => void;
+  syncItems: () => void;
 };

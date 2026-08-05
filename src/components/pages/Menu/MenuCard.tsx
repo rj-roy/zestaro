@@ -45,14 +45,14 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
           <h3 className="text-xl font-serif font-bold text-secondary dark:text-tertiary">
             {item.name}
           </h3>
-          <span className="text-lg font-bold text-primary">৳{item.price}</span>
+          <span className="text-lg font-bold text-primary">${item.price}</span>
         </div>
 
         <p className="text-neutral text-sm line-clamp-2">{item.description}</p>
 
         {/* Quantity Selector & Add to Cart */}
         <div className="flex items-center gap-3 pt-2">
-          <AddToCart itemId={item._id} itemName={item.name} itemPrice={item.price} isExistInDbCart={isExistInDbCart} userId={userId} />
+          <AddToCart itemId={item._id ?? ''} itemName={item.name ?? ''} itemPrice={item.price ?? 0} isExistInDbCart={isExistInDbCart} userId={userId} />
         </div>
       </div>
     </div>
