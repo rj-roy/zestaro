@@ -1,12 +1,13 @@
 'use client';
 import { getDataByQueryParams } from '@/lib/api/getData';
 import { authClient } from '@/lib/auth-client';
+import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
 import { serverMutation } from '@/lib/core/server';
 import { LocalCartItem } from '@/types/LocalCartItem';
 import { CartCountData, CartItemType } from '@/types/MenuPage';
 import { MinusIcon, PaperBag, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useOptimistic, useState } from "react";
 
 interface CartItemsData {
   cartItems: CartItemType[];
@@ -26,9 +27,43 @@ export default function FloatingCart({ forNav }: PropsType) {
   const [cartData, setCartData] = useState<CartItemType[]>([]);
   const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   const [cartCount, setCartCount] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
+
   const { data: session } = authClient.useSession();
   const id = session?.user.id;
   const name = session?.user.name;
+  const loggedIn = session ? true : false;
+  const realCartData = session ? cartData : localCart;
+
+  const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData, 
+    (state, action:{itemId: string, quantity: number}) => {
+      const {itemId, quantity} = action;
+      return state.map(item => item.itemId === itemId ? {...item, quantity} : item)
+    },
+  );
+
+  // const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
+  //   (state, { itemId, quantity }) => {
+  //     return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
+  //   },
+  // );
+
+  // const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
+  //   (state, { itemId, quantity }: { itemId: string, quantity: number }) => {
+  //     return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
+  //   });
+
+  const handleUpdateCartQ = async (itemId: string, delta: number, currentQuantity: number, option: string) => {
+    let updated = false;
+
+    if(option === "inc"){
+      updated = await increaseItemQuantityHelper(itemId, loggedIn);
+    };
+
+    startTransition(() => {
+      setOptimisticCart({ itemId, quantity: currentQuantity + delta })
+    });
+  };
+
 
   useEffect(() => {
     if (id) return;
@@ -42,10 +77,10 @@ export default function FloatingCart({ forNav }: PropsType) {
     if (!id) return;
     const pushLocalData = async () => {
       if (localCart.length > 0) {
+
         const data = JSON.stringify(localCart)
-        console.log(data);
         const res = await serverMutation('/api/v1/cart/create', { userId: id, userName: name, checkedItem: "[]", localCart: data }, "POST");
-        console.log(res);
+
         if (!res.success) return;
         localStorage.removeItem('cart');
         return res;
@@ -62,6 +97,7 @@ export default function FloatingCart({ forNav }: PropsType) {
       .then(({ data }) => {
         if (isCartItemsData(data)) {
           setCartData(data.cartItems ?? [])
+          console.log(data);
         } else if (data) {
           setCartCount({ cartLength: data.cartLength, totalPrice: data.totalPrice })
         }
@@ -71,10 +107,8 @@ export default function FloatingCart({ forNav }: PropsType) {
   }, [isOpen, id, localCart, name])
 
 
-  const realCartData = session ? cartData : localCart;
-
   const drawerTotal = realCartData.reduce((total, item) => {
-    return total + (item?.itemPrice ?? 0);
+    return total + Number(item?.itemPrice ?? 0);
   }, 0);
 
   const cartLength = session ? cartCount.cartLength : localCart.length;
@@ -129,12 +163,12 @@ export default function FloatingCart({ forNav }: PropsType) {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              {realCartData.length <= 0 ? (
+              {optimisticCart.length <= 0 ? (
                 <div className='h-full flex justify-center items-center text-center flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl'>
                   Your Cart Is Empty
                 </div>
               ) : (
-                realCartData.map((item, idx) => (
+                optimisticCart.map((item, idx) => (
                   <div key={idx} className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-xl">
                     <div className="flex-1">
                       <h4 className="font-semibold text-secondary dark:text-tertiary">
@@ -142,11 +176,18 @@ export default function FloatingCart({ forNav }: PropsType) {
                       </h4>
                       <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
                       <div className="flex items-center gap-3 mt-2">
-                        <button className="p-1 hover:text-primary transition-colors">
+                        <button
+                          onClick={() => handleUpdateCartQ(item.itemId, -1, item.quantity, "decr")}
+                          // onClick={() => decreaseItemQuantityHelper(item.itemId, loggedIn)}
+                          className="p-1 hover:text-primary transition-colors">
                           <MinusIcon />
                         </button>
-                        <span className="font-semibold w-6 text-center">{item.quantity ?? 1}</span>
-                        <button className="p-1 hover:text-primary transition-colors">
+                        <span className="font-semibold w-6 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => handleUpdateCartQ(item.itemId, +1, item.quantity, "incr")}
+                          // onClick={() => handleUpdateCart(item.itemId, 1, item.quantity)}
+                          // onClick={() => increaseItemQuantityHelper(item.itemId, loggedIn)}
+                          className="p-1 hover:text-primary transition-colors">
                           <Plus />
                         </button>
                         <button className="ml-auto p-1 text-red-500 hover:text-red-600">
@@ -163,7 +204,7 @@ export default function FloatingCart({ forNav }: PropsType) {
               <div className="flex justify-between items-center text-lg">
                 <span className="text-neutral">Subtotal</span>
                 <span className="font-bold text-secondary dark:text-tertiary">
-                  {drawerTotal}
+                  ${drawerTotal}
                 </span>
               </div>
               <Link

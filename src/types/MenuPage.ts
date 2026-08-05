@@ -16,10 +16,10 @@ export interface MenuPageProps {
 }
 
 export interface CartItemType {
-  itemId?: string;
-  itemName?: string;
-  itemPrice?: number;
-  quantity?: number;
+  itemId: string;
+  itemName: string;
+  itemPrice: number;
+  quantity: number;
 }
 
 export type CartCountData = {

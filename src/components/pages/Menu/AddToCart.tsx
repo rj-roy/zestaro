@@ -1,9 +1,9 @@
 'use client';
 import { useActionState, useEffect, useState, useTransition } from 'react';
 import { ShoppingCart } from 'lucide-react';
-import { handleAddToCart, CartActionState } from './handleAddToCart';
 import { toast } from 'react-toastify';
 import { LocalCartItem } from '@/types/LocalCartItem';
+import { addCartAction, CartActionState } from '@/actions/cart/addCartActions';
 
 const initialState: CartActionState = {
     added: false,
@@ -20,7 +20,7 @@ interface AddToCartProps {
 export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart, userId }: AddToCartProps) {
     const [localAdded, setLocalAdded] = useState(false);
 
-    const [state, formAction, pending] = useActionState(handleAddToCart, initialState);
+    const [state, formAction, pending] = useActionState(addCartAction, initialState);
     const [, startTransition] = useTransition();
 
     useEffect(() => {

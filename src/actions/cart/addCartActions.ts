@@ -7,7 +7,7 @@ export interface CartActionState {
   added: boolean;
 }
 
-export async function handleAddToCart(prevState: CartActionState, formData: FormData): Promise<CartActionState> {
+export async function addCartAction(prevState: CartActionState, formData: FormData): Promise<CartActionState> {
   const session = await userSession();
   const { id, name } = session?.user as userTypes;
 
