@@ -58,18 +58,13 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
             syncGuest()
             return;
         };
-        // console.log(storagekey, 'stor');
 
         const { data } = await getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=count&userId=${id}`);
         if (data && "cartLength" in data) {
-            setCartCount({ cartLength: data.cartLength, totalPrice: data.totalPrice })
+            setCartCount({ cartLength: data.cartLength, totalPrice: data.totalPrice });
         };
 
     }, [id, syncGuest])
-
-    // useEffect(() => {
-    //     console.log("cartCount changed:", cartCount);
-    // }, [cartCount]);
 
     const syncItems = useCallback(async () => {
         if (!id) {
@@ -83,7 +78,11 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
             setCartCount(deriveCount(data.cartItems ?? []));
         };
 
-    }, [id, syncGuest])
+    }, [id, syncGuest]);
+
+    const localPush = useCallback(()=> {
+
+    }, []);
 
     return (
         <CartContext.Provider

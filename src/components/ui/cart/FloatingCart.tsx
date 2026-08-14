@@ -25,95 +25,104 @@ const isCartItemsData = (data: CartResponse | null | undefined): data is CartIte
 
 export default function FloatingCart({ forNav }: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [cartData, setCartData] = useState<CartItemType[]>([]);
-  const [localCart, setLocalCart] = useState<CartItemType[]>([]);
-  const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
+  const { data: session } = authClient.useSession();
+  const id = session?.user.id;
+  const name = session?.user.name;
+  // const [cartData, setCartData] = useState<CartItemType[]>([]);
+  // const [localCart, setLocalCart] = useState<CartItemType[]>([]);
+  // const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
 
   const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems } = useCart();
 
   useEffect(() => {
     console.log("Component:", cartItems);
   }, [cartItems]);
-  
-  const { data: session } = authClient.useSession();
-  const id = session?.user.id;
-  const name = session?.user.name;
-  const loggedIn = session ? true : false;
-  const realCartData = session ? cartData : localCart;
-
-  const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
-    (state, action: { itemId: string, quantity: number }) => {
-      const { itemId, quantity } = action;
-      return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
-    },
-  );
-
-  const handleUpdateCartQ = async (itemId: string, delta: number, currentQuantity: number, option: string) => {
-    let updated = false;
-
-    if (option === "incr") {
-      updated = await increaseItemQuantityHelper(itemId, loggedIn);
-    } else {
-      updated = await decreaseItemQuantityHelper(itemId, loggedIn);
-    };
-
-    startTransition(() => {
-      setOptimisticCart({ itemId, quantity: currentQuantity + delta })
-    });
-  };
-
 
   useEffect(() => {
-    if (id) return;
-
-    const localCart = JSON.parse(localStorage.getItem("cart") || '[]') as LocalCartItem[];
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLocalCart(localCart);
-  }, [id]);
-
-  useEffect(() => {
-    if (!id) return;
-    syncDeriveCount();
-    syncItems();
-
-    const pushLocalData = async () => {
-      if (localCart.length > 0) {
-
-        const data = JSON.stringify(localCart)
-        const res = await serverMutation('/api/v1/cart/create', { userId: id, userName: name, checkedItem: "[]", localCart: data }, "POST");
-
-        if (!res.success) return;
-        localStorage.removeItem('cart');
-        return res;
-      };
-
-    };
-
     if (id) {
-      pushLocalData();
+      syncDeriveCount();
+      syncItems();
     };
+    syncGuest();
+  }, [id, syncDeriveCount, syncGuest, syncItems])
 
-    const controller = new AbortController();
-    getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=${isOpen ? "items" : "count"}&userId=${id}`, controller.signal)
-      .then(({ data }) => {
-        if (isCartItemsData(data)) {
-          setCartData(data.cartItems ?? [])
-          // console.log(data);
-        } else if (data) {
-          setCartCounts({ cartLength: data.cartLength, totalPrice: data.totalPrice })
-        }
-      })
-      .catch(() => { });
-    return () => controller.abort();
-  }, [isOpen, id, localCart, name, syncDeriveCount])
+  // const loggedIn = session ? true : false;
+  // const realCartData = session ? cartData : localCart;
+
+  // const [optimisticCart, setOptimisticCart] = useOptimistic(realCartData,
+  //   (state, action: { itemId: string, quantity: number }) => {
+  //     const { itemId, quantity } = action;
+  //     return state.map(item => item.itemId === itemId ? { ...item, quantity } : item)
+  //   },
+  // );
+
+  // const handleUpdateCartQ = async (itemId: string, delta: number, currentQuantity: number, option: string) => {
+  //   console.log('object handleupdateCartQ');
+  //   // let updated = false;
+
+  //   // if (option === "incr") {
+  //   //   updated = await increaseItemQuantityHelper(itemId, loggedIn);
+  //   // } else {
+  //   //   updated = await decreaseItemQuantityHelper(itemId, loggedIn);
+  //   // };
+
+  //   // startTransition(() => {
+  //   //   setOptimisticCart({ itemId, quantity: currentQuantity + delta })
+  //   // });
+  // };
 
 
-  const drawerTotal = cartItems.reduce((total, item) => {
-    return total + Number(item?.itemPrice ?? 0);
-  }, 0);
+  // useEffect(() => {
+  //   if (id) return;
 
-  const cartLength = session ? cartCount.cartLength : localCart.length;
-  const totalPrice = session ? cartCount.totalPrice : drawerTotal
+  //   const localCart = JSON.parse(localStorage.getItem("cart") || '[]') as LocalCartItem[];
+  //   // eslint-disable-next-line react-hooks/set-state-in-effect
+  //   setLocalCart(localCart);
+  // }, [id]);
+
+  // useEffect(() => {
+  //   // if (!id) return;
+  //   // syncDeriveCount();
+  //   // syncItems();
+
+  //   // const pushLocalData = async () => {
+  //   //   if (localCart.length > 0) {
+
+  //   //     const data = JSON.stringify(localCart)
+  //   //     const res = await serverMutation('/api/v1/cart/create', { userId: id, userName: name, checkedItem: "[]", localCart: data }, "POST");
+
+  //   //     if (!res.success) return;
+  //   //     localStorage.removeItem('cart');
+  //   //     return res;
+  //   //   };
+
+  //   // };
+
+  //   // if (id) {
+  //   //   pushLocalData();
+  //   // };
+
+  //   // const controller = new AbortController();
+  //   // getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=${isOpen ? "items" : "count"}&userId=${id}`, controller.signal)
+  //   //   .then(({ data }) => {
+  //   //     if (isCartItemsData(data)) {
+  //   //       setCartData(data.cartItems ?? [])
+  //   //       // console.log(data);
+  //   //     } else if (data) {
+  //   //       setCartCounts({ cartLength: data.cartLength, totalPrice: data.totalPrice })
+  //   //     }
+  //   //   })
+  //   //   .catch(() => { });
+  //   // return () => controller.abort();
+  // }, [isOpen, id, name, syncDeriveCount, syncItems])
+
+
+  // const drawerTotal = cartItems.reduce((total, item) => {
+  //   return total + Number(item?.itemPrice ?? 0);
+  // }, 0);
+
+  const cartLength = cartCount.cartLength;
+  const totalPrice = cartCount.totalPrice;
 
   return (
     <>
@@ -178,14 +187,14 @@ export default function FloatingCart({ forNav }: PropsType) {
                       <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
                       <div className="flex items-center gap-3 mt-2">
                         <button
-                          onClick={() => handleUpdateCartQ(item.itemId, -1, item.quantity, "decr")}
+                          // onClick={() => handleUpdateCartQ(item.itemId, -1, item.quantity, "decr")}
                           // onClick={() => decreaseItemQuantityHelper(item.itemId, loggedIn)}
                           className="p-1 hover:text-primary transition-colors">
                           <MinusIcon />
                         </button>
                         <span className="font-semibold w-6 text-center">{item.quantity}</span>
                         <button
-                          onClick={() => handleUpdateCartQ(item.itemId, +1, item.quantity, "incr")}
+                          // onClick={() => handleUpdateCartQ(item.itemId, +1, item.quantity, "incr")}
                           // onClick={() => handleUpdateCart(item.itemId, 1, item.quantity)}
                           // onClick={() => increaseItemQuantityHelper(item.itemId, loggedIn)}
                           className="p-1 hover:text-primary transition-colors">
@@ -205,7 +214,7 @@ export default function FloatingCart({ forNav }: PropsType) {
               <div className="flex justify-between items-center text-lg">
                 <span className="text-neutral">Subtotal</span>
                 <span className="font-bold text-secondary dark:text-tertiary">
-                  ${drawerTotal}
+                  ${totalPrice}
                 </span>
               </div>
               <Link

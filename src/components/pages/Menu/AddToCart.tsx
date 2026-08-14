@@ -3,7 +3,7 @@ import { useActionState, useEffect, useState, useTransition } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { LocalCartItem } from '@/types/LocalCartItem';
-import { addCartAction, CartActionState } from '@/actions/cart/addCartActions';
+import { addCartAction, CartActionState } from '@/actions/cart/addCartAction';
 import { useCart } from '@/components/providers/CartProvider';
 
 const initialState: CartActionState = {
@@ -19,22 +19,9 @@ interface AddToCartProps {
 }
 
 export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart, userId }: AddToCartProps) {
-    const [localAdded, setLocalAdded] = useState(false);
-
     const [state, formAction, pending] = useActionState(addCartAction, initialState);
     const [, startTransition] = useTransition();
-    const { syncDeriveCount } = useCart();
-
-    useEffect(() => {
-        const update = () => {
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
-            setLocalAdded(cart.some((item) => item.itemId === itemId));
-        };
-
-        update();
-        window.addEventListener('storage', update);
-        return () => window.removeEventListener('storage', update);
-    }, [itemId]);
+    const { syncDeriveCount, syncGuest, cartItems, syncItems } = useCart();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,9 +30,8 @@ export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart
         if (userId) {
             const form = new FormData(e.currentTarget);
 
-            const localCart = JSON.parse(localStorage.getItem('cart') || '[]') as LocalCartItem[];
-            if (localCart.length > 0) {
-                form.set('localCart', JSON.stringify(localCart));
+            if (cart.length > 0) {
+                form.set('localCart', JSON.stringify(cart));
             };
 
             startTransition(() => { formAction(form); });
@@ -59,18 +45,18 @@ export default function AddToCart({ itemId, itemName, itemPrice, isExistInDbCart
 
         localStorage.setItem('cart', JSON.stringify(cart));
         toast.success('Item added to cart');
-        setLocalAdded(true);
+        syncGuest();
     };
 
     useEffect(() => {
-        if (state.added) {
+        if(!state.added) return;
             syncDeriveCount()
-            localStorage.removeItem('cart');
+            syncItems();
             toast.success("Item Added to cart.")
-        }
-    }, [state, syncDeriveCount]);
+            return;
+    }, [state.added]);
 
-    const isAdded = isExistInDbCart || localAdded || state.added;
+    const isAdded = cartItems.some((item) => item.itemId === itemId);
 
     return (
         <form

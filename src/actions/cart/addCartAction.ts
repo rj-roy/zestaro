@@ -12,8 +12,8 @@ export async function addCartAction(prevState: CartActionState, formData: FormDa
   const { id, name } = session?.user as userTypes;
 
   const checkedItem = formData.get('checkedItem');
-  const localCart = formData.get('localCart')
-  const data = { userId: id, userName: name, checkedItem: checkedItem, localCart }
+  // const localCart = formData.get('localCart')
+  const data = { userId: id, userName: name, checkedItem: checkedItem }
 
   const createCart = await serverMutation('/api/v1/cart/create', data, 'POST')
   
