@@ -32,19 +32,20 @@ export default function FloatingCart({ forNav }: PropsType) {
   // const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   // const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
 
-  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems } = useCart();
+  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems, pushLocalToDb } = useCart();
 
-  useEffect(() => {
-    console.log("Component:", cartItems);
-  }, [cartItems]);
+  // useEffect(() => {
+  //   pushLocalToDb();
+  // }, [pushLocalToDb]);
 
   useEffect(() => {
     if (id) {
+      pushLocalToDb();
       syncDeriveCount();
       syncItems();
     };
     syncGuest();
-  }, [id, syncDeriveCount, syncGuest, syncItems])
+  }, [id, pushLocalToDb, syncDeriveCount, syncGuest, syncItems])
 
   // const loggedIn = session ? true : false;
   // const realCartData = session ? cartData : localCart;

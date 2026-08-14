@@ -1,8 +1,10 @@
 'use client'
 import { getDataByParamsId, getDataByQueryParams } from "@/lib/api/getData";
 import { authClient } from "@/lib/auth-client";
+import { serverMutation } from "@/lib/core/server";
 import { CartContextValue, CartCountData, CartItemType } from "@/types/MenuPage";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface CartItemsData {
     cartItems: CartItemType[];
@@ -80,13 +82,25 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
 
     }, [id, syncGuest]);
 
-    const localPush = useCallback(()=> {
+    const pushLocalToDb = async () => {
+        if (!id) return;
+        const localItems = readLocal();
+        if (localItems.length > 0) {
+            const data = { userId: id, userName: name, localCart: localItems };
+            const createCart = await serverMutation('/api/v1/cart/create', data, 'POST')
 
-    }, []);
+            if (createCart.success) {
+                localStorage.removeItem('cart');
+            } else {
+                console.log("localData not updated");
+            };
+        }
+
+    }
 
     return (
         <CartContext.Provider
-            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems }}
+            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb }}
         >
             {children}
         </CartContext.Provider>
