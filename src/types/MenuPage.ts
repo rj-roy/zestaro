@@ -38,4 +38,5 @@ export interface CartContextValue {
   syncGuest: () => void;
   syncDeriveCount: () => void;
   syncItems: () => void;
+  pushLocalToDb: () => void;
 };
