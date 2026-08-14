@@ -32,7 +32,7 @@ export default function FloatingCart({ forNav }: PropsType) {
   // const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   // const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
 
-  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems, pushLocalToDb } = useCart();
+  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems, pushLocalToDb, updateQuantity } = useCart();
 
   // useEffect(() => {
   //   pushLocalToDb();
@@ -185,9 +185,10 @@ export default function FloatingCart({ forNav }: PropsType) {
                       <h4 className="font-semibold text-secondary dark:text-tertiary">
                         {item.itemName}
                       </h4>
-                      <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
+                      <p className="text-primary font-bold">${Number(item.itemPrice * item.quantity) ?? 0}</p>
                       <div className="flex items-center gap-3 mt-2">
                         <button
+                          onClick={()=> updateQuantity(item.itemId, -1)}
                           // onClick={() => handleUpdateCartQ(item.itemId, -1, item.quantity, "decr")}
                           // onClick={() => decreaseItemQuantityHelper(item.itemId, loggedIn)}
                           className="p-1 hover:text-primary transition-colors">
@@ -195,6 +196,7 @@ export default function FloatingCart({ forNav }: PropsType) {
                         </button>
                         <span className="font-semibold w-6 text-center">{item.quantity}</span>
                         <button
+                          onClick={()=> updateQuantity(item.itemId, 1)}
                           // onClick={() => handleUpdateCartQ(item.itemId, +1, item.quantity, "incr")}
                           // onClick={() => handleUpdateCart(item.itemId, 1, item.quantity)}
                           // onClick={() => increaseItemQuantityHelper(item.itemId, loggedIn)}

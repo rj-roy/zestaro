@@ -1,4 +1,5 @@
 'use client'
+import { serverUpdateQuantity } from "@/actions/cart/updateCartActions";
 import { getDataByParamsId, getDataByQueryParams } from "@/lib/api/getData";
 import { authClient } from "@/lib/auth-client";
 import { serverMutation } from "@/lib/core/server";
@@ -42,11 +43,9 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
     const [cartItems, setCartItems] = useState<CartItemType[]>([]);
     const [cartCount, setCartCount] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
     const [status, setStatus] = useState<'loading' | 'ready'>('loading');
-    const text = "test"
 
     const id = session?.user.id;
     const name = session?.user.name;
-    const isLoggedid = !!id;
 
     const syncGuest = useCallback(() => {
         const localItems = readLocal();
@@ -82,7 +81,7 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
 
     }, [id, syncGuest]);
 
-    const pushLocalToDb = async () => {
+    const pushLocalToDb = useCallback(async () => {
         if (!id) return;
         const localItems = readLocal();
         if (localItems.length > 0) {
@@ -90,17 +89,58 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
             const createCart = await serverMutation('/api/v1/cart/create', data, 'POST')
 
             if (createCart.success) {
-                localStorage.removeItem('cart');
+                localStorage.removeItem(storagekey);
             } else {
                 console.log("localData not updated");
             };
         }
+    }, [id, name]);
 
-    }
+    const updateQuantity = useCallback(async (itemId: string, delta: number) => {
+        const updateItems = cartItems.reduce<CartItemType[]>((acc, item) => {
+            if (item.itemId !== itemId) {
+                acc.push(item);
+                return acc;
+            };
+
+            if(item.quantity <= 1 && delta === -1){
+                toast.error("Minimum required quantity is 1. You can remove it");
+                acc.push(item);
+                return acc;
+            };
+
+            const newQuantity = (Number(item.quantity)) + delta;
+            if (newQuantity >= 1) {
+                acc.push({ ...item, quantity: newQuantity });
+            };
+            return acc;
+        }, []);
+
+        setCartItems(updateItems);
+        setCartCount(deriveCount(updateItems));
+        if (!id) {
+            localStorage.setItem(storagekey, JSON.stringify(updateItems));
+            syncGuest()
+            return;
+        };
+
+        const selectedUpdateI = updateItems.find((i) => i.itemId === itemId);
+
+        if (id && selectedUpdateI) {
+            const updated = await serverUpdateQuantity(id, selectedUpdateI.itemId, selectedUpdateI.quantity);
+            if (!updated?.success) {
+                toast.error(updated?.message || "Something went wrong! Please try again later.");
+            };
+
+            syncItems();
+            syncDeriveCount();
+        };
+
+    }, [cartItems, id, syncDeriveCount, syncGuest, syncItems]);
 
     return (
         <CartContext.Provider
-            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb }}
+            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb, updateQuantity }}
         >
             {children}
         </CartContext.Provider>
