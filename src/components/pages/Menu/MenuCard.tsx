@@ -52,7 +52,7 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
 
         {/* Quantity Selector & Add to Cart */}
         <div className="flex items-center gap-3 pt-2">
-          <AddToCart itemId={item._id ?? ''} itemName={item.name ?? ''} itemPrice={item.price ?? 0} itemDesc={item.description ?? ''} userId={userId} />
+          <AddToCart itemId={item._id ?? ''} itemName={item.name ?? ''} itemPrice={item.price ?? 0} itemDesc={item.description ?? ''} userId={userId} imageUrl={item.imageUrl}/>
         </div>
       </div>
     </div>

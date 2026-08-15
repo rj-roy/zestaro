@@ -4,4 +4,5 @@ export type LocalCartItem = {
     itemPrice: number;
     itemDesc?: string;
     quantity: number
+    imageUrl: string;
 };

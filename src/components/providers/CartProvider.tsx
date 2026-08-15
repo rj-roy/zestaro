@@ -23,6 +23,7 @@ const normaLizeItem = (item: CartItemType): CartItemType => ({
     itemPrice: item.itemPrice ?? 0,
     itemDesc: item.itemDesc ?? '',
     quantity: item.quantity ?? 0,
+    imageUrl: item.imageUrl ?? '',
 })
 const readLocal = () => {
     const raw = localStorage.getItem(storagekey);

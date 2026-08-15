@@ -4,8 +4,7 @@ import { HandPlatter } from 'lucide-react';
 import CartItemCard from '@/components/pages/Cart/CartItemCard';
 import OrderSummary from '@/components/pages/Cart/OrderSummary';
 import { useCart } from '@/components/providers/CartProvider';
-import { useEffect, useState } from 'react';
-import { CartItemType } from '@/types/MenuPage';
+import { useEffect } from 'react';
 
 const CartPage = () => {
     const { cartItems, cartCount, syncItems, updateQuantity, removeItem } = useCart();
@@ -13,8 +12,6 @@ const CartPage = () => {
     useEffect(()=> {
         syncItems(true);
     }, [syncItems]);
-
-    console.log(cartItems);
 
     return (
         <div className="mx-auto grid max-w-full grid-cols-1 gap-3">
@@ -59,6 +56,7 @@ const CartPage = () => {
                                     description={item.itemDesc ?? 'Epmty Description'}
                                     price={item.itemPrice}
                                     quantity={item.quantity}
+                                    imageUrl={item.imageUrl ?? ''}
                                     onUpdateQuantity={updateQuantity}
                                     onRemove={removeItem}
                                 />

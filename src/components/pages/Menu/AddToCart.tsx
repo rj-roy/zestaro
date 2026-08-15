@@ -16,9 +16,10 @@ interface AddToCartProps {
     itemPrice: number;
     itemDesc: string;
     userId?: string;
+    imageUrl: string;
 }
 
-export default function AddToCart({ itemId, itemName, itemPrice, itemDesc, userId }: AddToCartProps) {
+export default function AddToCart({ itemId, itemName, itemPrice, itemDesc, userId, imageUrl }: AddToCartProps) {
     const [state, formAction, pending] = useActionState(addCartAction, initialState);
     const [, startTransition] = useTransition();
     const { syncDeriveCount, syncGuest, cartItems, syncItems } = useCart();
@@ -40,7 +41,7 @@ export default function AddToCart({ itemId, itemName, itemPrice, itemDesc, userI
 
         const alreadyInCart = cart.some((item) => item.itemId === itemId);
         if (!alreadyInCart) {
-            cart.push({ itemId, itemName, itemPrice, itemDesc, quantity: 1 });
+            cart.push({ itemId, itemName, itemPrice, itemDesc, imageUrl, quantity: 1 });
         };
 
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -63,7 +64,7 @@ export default function AddToCart({ itemId, itemName, itemPrice, itemDesc, userI
             onSubmit={handleSubmit}
             className="flex items-center gap-3 pt-2 w-full"
         >
-            <input type="hidden" name="checkedItem" value={JSON.stringify({ itemId, itemName, itemPrice, itemDesc, quantity: 1 })} />
+            <input type="hidden" name="checkedItem" value={JSON.stringify({ itemId, itemName, itemPrice, itemDesc, imageUrl, quantity: 1 })} />
 
             <button
                 type="submit"

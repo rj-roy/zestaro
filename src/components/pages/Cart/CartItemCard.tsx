@@ -1,5 +1,6 @@
 'use client';
 import { MinusIcon, Plus, Trash2, UtensilsCrossed } from 'lucide-react';
+import Image from 'next/image';
 
 interface CartItemCardProps {
   id: string;
@@ -7,30 +8,21 @@ interface CartItemCardProps {
   description: string;
   price: number;
   quantity: number;
+  imageUrl: string;
   onUpdateQuantity: (id: string, delta: number) => void;
   onRemove: (id: string) => void;
 }
 
-export default function CartItemCard({
-  id,
-  name,
-  description,
-  price,
-  quantity,
-  onUpdateQuantity,
-  onRemove,
-}: CartItemCardProps) {
+export default function CartItemCard({ id, name, description, price, quantity, imageUrl, onUpdateQuantity, onRemove }: CartItemCardProps) {
   return (
     <div className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-2xl border border-neutral/10 shadow-sm hover:shadow-xl transition-all duration-300">
-      {/* Image placeholder */}
       <div className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center">
-        <UtensilsCrossed className="w-10 h-10 text-primary/70" />
-        <span className="absolute top-2 left-2 px-2 py-1 bg-white/90 dark:bg-secondary/90 backdrop-blur-sm rounded-md text-[10px] font-semibold text-secondary dark:text-tertiary">
-          
-        </span>
+        {
+          imageUrl ? <Image src={imageUrl} alt={name} width={100} height={100} className='rounded-xl' />
+            : <UtensilsCrossed className="w-10 h-10 text-primary/70" />
+        }
       </div>
 
-      {/* Content */}
       <div className="flex-1 min-w-0 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg sm:text-xl font-serif font-bold text-secondary dark:text-tertiary line-clamp-1">
