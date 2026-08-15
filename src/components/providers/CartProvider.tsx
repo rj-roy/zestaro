@@ -1,7 +1,7 @@
 'use client'
 import { removeCartAction } from "@/actions/cart/removeCartAction";
 import { serverUpdateQuantity } from "@/actions/cart/updateCartActions";
-import { getDataByParamsId, getDataByQueryParams } from "@/lib/api/getData";
+import { getDataByQueryParams } from "@/lib/api/getData";
 import { authClient } from "@/lib/auth-client";
 import { serverMutation } from "@/lib/core/server";
 import { CartContextValue, CartCountData, CartItemType } from "@/types/MenuPage";

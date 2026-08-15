@@ -28,7 +28,7 @@ export default function NavBar() {
     };
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-neutral/20 bg-tertiary dark:bg-secondary dark:border-neutral/30 transition-colors duration-300">
+        <nav className="sticky top-0 z-50 w-full border-b border-neutral/20 bg-wh-p dark:bg-bl-p shadow-xl dark:border-neutral/30 transition-colors duration-300">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-20 items-center justify-between">
                     {/* Logo */}

@@ -44,7 +44,7 @@ export default function MenuNav({ activeMenu }: MenuNavProps) {
 
     return (
         <aside className='fixed z-99'>
-            <div className='relative w-full bg-tertiary dark:bg-secondary md:min-h-screen md:shadow-sm'>
+            <div className='relative w-full bg-wh-s dark:bg-secondary md:min-h-screen md:shadow-sm'>
                 {
                     isOpen && (
                         <button
@@ -70,7 +70,7 @@ export default function MenuNav({ activeMenu }: MenuNavProps) {
 
                 {
                     isOpen &&
-                    <nav className={`fixed left-0 top-0 z-40 flex h-screen min-w-60 flex-col overflow-y-auto bg-tertiary shadow-xl transition-transform duration-200 dark:bg-secondary md:static md:h-screen md:w-full md:translate-x-0 md:flex md:shadow-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                    <nav className={`fixed left-0 top-0 z-40 flex h-screen min-w-60 flex-col overflow-y-auto bg-wh-p shadow-xl transition-transform duration-200 dark:bg-secondary md:static md:h-screen md:w-full md:translate-x-0 md:flex md:shadow-none ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                         {/* Header */}
                         <div className="px-2 pt-8 pb-6">
                             <h1 className="text-xl font-serif font-bold text-primary">
