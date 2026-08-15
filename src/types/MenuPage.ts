@@ -20,6 +20,7 @@ export interface CartItemType {
   itemName: string;
   itemPrice: number;
   itemDesc?: string;
+  imageUrl?: string;
   quantity: number;
 }
 
@@ -35,10 +36,11 @@ export type CartCountData = {
 
 export interface CartContextValue {
   cartItems: CartItemType[];
+  setCartItems: React.Dispatch<React.SetStateAction<CartItemType[]>>;
   cartCount: CartCountData;
   syncGuest: () => void;
   syncDeriveCount: () => void;
-  syncItems: () => void;
+  syncItems: (image?: boolean) => void;
   pushLocalToDb: () => void;
   updateQuantity: (itemId: string, delta: number) => void;
   removeItem: (itemId: string) => void;

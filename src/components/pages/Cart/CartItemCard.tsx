@@ -5,7 +5,6 @@ interface CartItemCardProps {
   id: string;
   name: string;
   description: string;
-  tag: string;
   price: number;
   quantity: number;
   onUpdateQuantity: (id: string, delta: number) => void;
@@ -16,7 +15,6 @@ export default function CartItemCard({
   id,
   name,
   description,
-  tag,
   price,
   quantity,
   onUpdateQuantity,
@@ -28,7 +26,7 @@ export default function CartItemCard({
       <div className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center">
         <UtensilsCrossed className="w-10 h-10 text-primary/70" />
         <span className="absolute top-2 left-2 px-2 py-1 bg-white/90 dark:bg-secondary/90 backdrop-blur-sm rounded-md text-[10px] font-semibold text-secondary dark:text-tertiary">
-          {tag}
+          
         </span>
       </div>
 

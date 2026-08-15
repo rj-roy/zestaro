@@ -69,13 +69,13 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
 
     }, [id, syncGuest])
 
-    const syncItems = useCallback(async () => {
+    const syncItems = useCallback(async (image?: boolean) => {
         if (!id) {
             syncGuest();
             return;
         };
 
-        const { data } = await getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=items&userId=${id}`);
+        const { data } = await getDataByQueryParams<CartResponse>(`/api/v1/cart/get/items?mode=items&userId=${id}&image=${image}`);
         if (isCartItemsData(data)) {
             setCartItems(data.cartItems ?? [])
             setCartCount(deriveCount(data.cartItems ?? []));
@@ -170,7 +170,7 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
 
     return (
         <CartContext.Provider
-            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb, updateQuantity, removeItem }}
+            value={{ cartItems, setCartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb, updateQuantity, removeItem }}
         >
             {children}
         </CartContext.Provider>

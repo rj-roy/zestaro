@@ -7,8 +7,8 @@ interface OrderSummaryProps {
   itemCount: number;
 }
 
-const DELIVERY_FEE = 4.99;
-const TAX_RATE = 0.08;
+const DELIVERY_FEE = 0.99;
+const TAX_RATE = 0.00;
 
 export default function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
   const delivery = subtotal > 0 ? DELIVERY_FEE : 0;
@@ -40,7 +40,7 @@ export default function OrderSummary({ subtotal, itemCount }: OrderSummaryProps)
           </span>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-neutral">Tax (8%)</span>
+          <span className="text-neutral">Tax (0%)</span>
           <span className="font-semibold text-secondary dark:text-tertiary">
             ${tax.toFixed(2)}
           </span>
