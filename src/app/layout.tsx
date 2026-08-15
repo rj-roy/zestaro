@@ -29,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-tertiary dark:bg-secondary">
+      <body className="min-h-full flex flex-col bg-wh-p dark:bg-bl-p">
         <ThemeProviderComponent>
           <ToastContainer />
           <CartProvider>

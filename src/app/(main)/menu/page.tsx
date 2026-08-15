@@ -45,14 +45,14 @@ const MenuPage = async ({ searchParams }: MenuPageProps) => {
     };
 
     return (
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3">
+        <div className="mx-auto grid max-w-full grid-cols-1 gap-3">
             <MenuNav activeMenu={activeCategory} />
-            <div className="min-w-0 min-h-screen bg-tertiary dark:bg-secondary gap-3 px-4 sm:px-6 lg:px-2 py-8">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-                    <MenuHeader category={activeCategory} />
+            <div className="min-w-0 min-h-screen bg-wh-p dark:bg-bl-p gap-3 px-4 sm:px-6 lg:px-2 py-8">
+                <div className="flex flex-col lg:flex-row items-center lg:justify-between bg-wh-s dark:bg-bl-p mx-3 p-3 gap-4 mb-15">
+                    {/* <MenuHeader category={activeCategory} /> */}
+                    <FilterTags query={query} />
                     <SearchBar query={query} />
                 </div>
-                <FilterTags query={query} />
                 <MenuGrid menuItems={filteredItems} />
                 <div>
                     <PagePagination currentPage={currentPage} totalPages={totalPages} searchParams={paginationParams} />

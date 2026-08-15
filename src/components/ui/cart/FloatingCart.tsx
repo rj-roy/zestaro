@@ -1,14 +1,14 @@
 'use client';
 import { useCart } from '@/components/providers/CartProvider';
-import { getDataByQueryParams } from '@/lib/api/getData';
+// import { getDataByQueryParams } from '@/lib/api/getData';
 import { authClient } from '@/lib/auth-client';
-import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
-import { serverMutation } from '@/lib/core/server';
-import { LocalCartItem } from '@/types/LocalCartItem';
+// import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
+// import { serverMutation } from '@/lib/core/server';
+// import { LocalCartItem } from '@/types/LocalCartItem';
 import { CartCountData, CartItemType } from '@/types/MenuPage';
 import { MinusIcon, PaperBag, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
-import { startTransition, useEffect, useOptimistic, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CartItemsData {
   cartItems: CartItemType[];
@@ -20,19 +20,19 @@ interface PropsType {
 
 type CartResponse = CartItemsData | CartCountData;
 
-const isCartItemsData = (data: CartResponse | null | undefined): data is CartItemsData =>
-  !!data && 'cartItems' in data;
+// const isCartItemsData = (data: CartResponse | null | undefined): data is CartItemsData =>
+//   !!data && 'cartItems' in data;
 
 export default function FloatingCart({ forNav }: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session } = authClient.useSession();
   const id = session?.user.id;
-  const name = session?.user.name;
+  // const name = session?.user.name;
   // const [cartData, setCartData] = useState<CartItemType[]>([]);
   // const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   // const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });
 
-  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems, pushLocalToDb } = useCart();
+  const { cartItems, cartCount, syncDeriveCount, syncGuest, syncItems, pushLocalToDb, updateQuantity, removeItem } = useCart();
 
   // useEffect(() => {
   //   pushLocalToDb();
@@ -185,9 +185,10 @@ export default function FloatingCart({ forNav }: PropsType) {
                       <h4 className="font-semibold text-secondary dark:text-tertiary">
                         {item.itemName}
                       </h4>
-                      <p className="text-primary font-bold">${item.itemPrice ?? 1}</p>
+                      <p className="text-primary font-bold">${Number(item.itemPrice * item.quantity) ?? 0}</p>
                       <div className="flex items-center gap-3 mt-2">
                         <button
+                          onClick={() => updateQuantity(item.itemId, -1)}
                           // onClick={() => handleUpdateCartQ(item.itemId, -1, item.quantity, "decr")}
                           // onClick={() => decreaseItemQuantityHelper(item.itemId, loggedIn)}
                           className="p-1 hover:text-primary transition-colors">
@@ -195,13 +196,16 @@ export default function FloatingCart({ forNav }: PropsType) {
                         </button>
                         <span className="font-semibold w-6 text-center">{item.quantity}</span>
                         <button
+                          onClick={() => updateQuantity(item.itemId, 1)}
                           // onClick={() => handleUpdateCartQ(item.itemId, +1, item.quantity, "incr")}
                           // onClick={() => handleUpdateCart(item.itemId, 1, item.quantity)}
                           // onClick={() => increaseItemQuantityHelper(item.itemId, loggedIn)}
                           className="p-1 hover:text-primary transition-colors">
                           <Plus />
                         </button>
-                        <button className="ml-auto p-1 text-red-500 hover:text-red-600">
+                        <button
+                          onClick={()=> removeItem(item.itemId)}
+                          className="ml-auto p-1 text-red-500 hover:text-red-600">
                           <Trash2 size={15} />
                         </button>
                       </div>
