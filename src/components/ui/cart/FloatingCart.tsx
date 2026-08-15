@@ -1,14 +1,14 @@
 'use client';
 import { useCart } from '@/components/providers/CartProvider';
-import { getDataByQueryParams } from '@/lib/api/getData';
+// import { getDataByQueryParams } from '@/lib/api/getData';
 import { authClient } from '@/lib/auth-client';
-import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
-import { serverMutation } from '@/lib/core/server';
-import { LocalCartItem } from '@/types/LocalCartItem';
+// import { decreaseItemQuantityHelper, increaseItemQuantityHelper } from '@/lib/cart/updateCartItemHelper';
+// import { serverMutation } from '@/lib/core/server';
+// import { LocalCartItem } from '@/types/LocalCartItem';
 import { CartCountData, CartItemType } from '@/types/MenuPage';
 import { MinusIcon, PaperBag, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
 import Link from 'next/link';
-import { startTransition, useEffect, useOptimistic, useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CartItemsData {
   cartItems: CartItemType[];
@@ -20,14 +20,14 @@ interface PropsType {
 
 type CartResponse = CartItemsData | CartCountData;
 
-const isCartItemsData = (data: CartResponse | null | undefined): data is CartItemsData =>
-  !!data && 'cartItems' in data;
+// const isCartItemsData = (data: CartResponse | null | undefined): data is CartItemsData =>
+//   !!data && 'cartItems' in data;
 
 export default function FloatingCart({ forNav }: PropsType) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: session } = authClient.useSession();
   const id = session?.user.id;
-  const name = session?.user.name;
+  // const name = session?.user.name;
   // const [cartData, setCartData] = useState<CartItemType[]>([]);
   // const [localCart, setLocalCart] = useState<CartItemType[]>([]);
   // const [cartCounts, setCartCounts] = useState<CartCountData>({ cartLength: 0, totalPrice: 0 });

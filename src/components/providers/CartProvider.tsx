@@ -21,6 +21,7 @@ const normaLizeItem = (item: CartItemType): CartItemType => ({
     itemId: item.itemId ?? '',
     itemName: item.itemName ?? '',
     itemPrice: item.itemPrice ?? 0,
+    itemDesc: item.itemDesc ?? '',
     quantity: item.quantity ?? 0,
 })
 const readLocal = () => {

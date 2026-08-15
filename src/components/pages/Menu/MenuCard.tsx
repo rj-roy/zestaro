@@ -9,11 +9,11 @@ interface MenuCardProps {
 
 export default async function MenuCard({ item, userId }: MenuCardProps) {
 
-  let isExistInDbCart = false;
-  if (userId) {
-    const res = await fetch(`${process.env.SERVER_BASE}/api/v1/cart/get/item/exist?itemId=${item._id}&userId=${userId}`)
-    isExistInDbCart = await res.json();
-  };
+  // let isExistInDbCart = false;
+  // if (userId) {
+  //   const res = await fetch(`${process.env.SERVER_BASE}/api/v1/cart/get/item/exist?itemId=${item._id}&userId=${userId}`)
+  //   isExistInDbCart = await res.json();
+  // };
 
   return (
     <div className="flex flex-col justify-between group bg-white dark:bg-neutral/20 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-neutral/10">
@@ -52,7 +52,7 @@ export default async function MenuCard({ item, userId }: MenuCardProps) {
 
         {/* Quantity Selector & Add to Cart */}
         <div className="flex items-center gap-3 pt-2">
-          <AddToCart itemId={item._id ?? ''} itemName={item.name ?? ''} itemPrice={item.price ?? 0} isExistInDbCart={isExistInDbCart} userId={userId} />
+          <AddToCart itemId={item._id ?? ''} itemName={item.name ?? ''} itemPrice={item.price ?? 0} itemDesc={item.description ?? ''} userId={userId} />
         </div>
       </div>
     </div>
