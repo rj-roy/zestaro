@@ -40,4 +40,5 @@ export interface CartContextValue {
   syncItems: () => void;
   pushLocalToDb: () => void;
   updateQuantity: (itemId: string, delta: number) => void;
+  removeItem: (itemId: string) => void;
 };

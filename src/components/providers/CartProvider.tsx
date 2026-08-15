@@ -1,4 +1,5 @@
 'use client'
+import { removeCartAction } from "@/actions/cart/removeCartAction";
 import { serverUpdateQuantity } from "@/actions/cart/updateCartActions";
 import { getDataByParamsId, getDataByQueryParams } from "@/lib/api/getData";
 import { authClient } from "@/lib/auth-client";
@@ -103,7 +104,7 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
                 return acc;
             };
 
-            if(item.quantity <= 1 && delta === -1){
+            if (item.quantity <= 1 && delta === -1) {
                 toast.error("Minimum required quantity is 1. You can remove it");
                 acc.push(item);
                 return acc;
@@ -138,9 +139,37 @@ export const CartProvider = ({ children }: Readonly<{ children: React.ReactNode 
 
     }, [cartItems, id, syncDeriveCount, syncGuest, syncItems]);
 
+    const removeItem = useCallback(async (itemId: string) => {
+
+        if (!itemId) return;
+        const updateItems = cartItems.filter((i) => i.itemId !== itemId);
+
+        if (!id) {
+            localStorage.setItem(storagekey, JSON.stringify(updateItems));
+            syncGuest();
+            toast.success("Removed");
+            return;
+        };
+
+        setCartItems(updateItems);
+        setCartCount(deriveCount(updateItems));
+
+        if (id) {
+            const res = await removeCartAction(id, itemId);
+            if (!res.success) {
+                console.log(res);
+                syncItems();
+                toast.error("Something went wrong!");
+                return;
+            };
+            return toast.success("removed");
+        };
+
+    }, [cartItems, id, syncGuest, syncItems]);
+
     return (
         <CartContext.Provider
-            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb, updateQuantity }}
+            value={{ cartItems, cartCount, syncGuest, syncDeriveCount, syncItems, pushLocalToDb, updateQuantity, removeItem }}
         >
             {children}
         </CartContext.Provider>
