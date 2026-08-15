@@ -30,7 +30,7 @@ export default function FilterTags({ query }: FilterTagsProps) {
   const dietaryTagsStr = getFirst(query.dietaryTags);
 
   return (
-    <div className="flex flex-wrap gap-3 mb-8">
+    <div className="flex flex-wrap gap-3">
       {filters.map((filter) => {
         const dietaryTags = dietaryTagsStr ? dietaryTagsStr.split(",") : [];
         const isSelected = dietaryTags.includes(filter.id);
