@@ -223,7 +223,7 @@ export default function FloatingCart({ forNav }: PropsType) {
                 </span>
               </div>
               <Link
-                href="/checkout"
+                href="/cart"
                 className="block w-full bg-primary hover:bg-primary/90 text-tertiary text-center py-4 rounded-xl font-bold text-lg transition-all hover:shadow-lg"
               >
                 Checkout

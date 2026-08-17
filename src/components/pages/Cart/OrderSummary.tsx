@@ -21,16 +21,34 @@ export default function OrderSummary({ subtotal, itemCount }: OrderSummaryProps)
 
   const router = useRouter();
 
-  const checkoutSubmission = () => {
+  const checkoutSubmission = async () => {
     if (!session?.user) {
       toast.error("Please Login to checkout! Rediredting...")
-      setTimeout(()=>{
+      setTimeout(() => {
         router.push('/auth?login=true')
       }, 5000);
       return;
-    };
+    } else {
+      const res = await fetch('/api/checkout_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          price: total,
+        }),
+      });
 
-    
+      const data = await res.json();
+      console.log(data);
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.message || "Failed to create checkout session");
+      }
+
+    };
   };
 
   return (
