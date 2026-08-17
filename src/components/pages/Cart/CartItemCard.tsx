@@ -18,7 +18,7 @@ export default function CartItemCard({ id, name, description, price, quantity, i
     <div className="flex gap-4 bg-white dark:bg-neutral/20 p-4 rounded-2xl border border-neutral/10 shadow-sm hover:shadow-xl transition-all duration-300">
       <div className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-primary/25 to-primary/10 flex items-center justify-center">
         {
-          imageUrl ? <Image src={imageUrl} alt={name} width={100} height={100} className='rounded-xl' />
+          imageUrl ? <Image src={imageUrl} alt={name} width={100} height={100} loading='eager' className='rounded-xl' />
             : <UtensilsCrossed className="w-10 h-10 text-primary/70" />
         }
       </div>

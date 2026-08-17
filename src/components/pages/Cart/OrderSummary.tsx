@@ -1,6 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
+import { useSession } from '@/lib/auth-client';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -11,9 +14,24 @@ const DELIVERY_FEE = 0.99;
 const TAX_RATE = 0.00;
 
 export default function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
+  const { data: session } = useSession();
   const delivery = subtotal > 0 ? DELIVERY_FEE : 0;
   const tax = subtotal * TAX_RATE;
   const total = subtotal + delivery + tax;
+
+  const router = useRouter();
+
+  const checkoutSubmission = () => {
+    if (!session?.user) {
+      toast.error("Please Login to checkout! Rediredting...")
+      setTimeout(()=>{
+        router.push('/auth?login=true')
+      }, 5000);
+      return;
+    };
+
+    
+  };
 
   return (
     <div className="bg-white dark:bg-neutral/20 rounded-2xl border border-neutral/10 shadow-sm hover:shadow-xl transition-all duration-300 p-6 space-y-5 h-fit lg:sticky lg:top-28">
@@ -54,13 +72,13 @@ export default function OrderSummary({ subtotal, itemCount }: OrderSummaryProps)
         </span>
       </div>
 
-      <Link
-        href="/checkout"
+      <button
+        onClick={checkoutSubmission}
         className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary/90 text-tertiary px-4 py-4 rounded-xl font-bold transition-all hover:shadow-lg active:scale-95"
       >
         <ShoppingBag className="w-5 h-5" />
         Proceed to Checkout
-      </Link>
+      </button>
 
       <Link
         href="/menu"
