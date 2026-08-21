@@ -8,8 +8,9 @@ import { useEffect } from 'react';
 
 const RootCartComp = () => {
     const { cartItems, cartCount, syncItems, updateQuantity, removeItem } = useCart();
+    const items = cartItems.map(({itemId, itemName, itemPrice})=>({itemId, itemName, itemPrice}))
 
-    useEffect(()=> {
+    useEffect(() => {
         syncItems(true);
     }, [syncItems]);
 
@@ -62,7 +63,7 @@ const RootCartComp = () => {
                                 />
                             ))}
                         </div>
-                        <OrderSummary subtotal={cartCount.totalPrice} itemCount={cartCount.cartLength} />
+                        <OrderSummary items={items} subtotal={cartCount.totalPrice} itemCount={cartCount.cartLength} />
                     </div>
                 )}
             </div>
