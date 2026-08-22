@@ -9,18 +9,17 @@ import { toast } from "react-toastify";
 
 interface Props {
     delvMeth: string;
-    total: number;
     items: Items[];
 };
 
-export default function CheckoutPopup({ delvMeth, total, items }: Props) {
+export default function CheckoutPopup({ delvMeth, items }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { data: session } = useSession();
     const router = useRouter();
 
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const { fullName, address, contact, note } = Object.fromEntries(new FormData(e.currentTarget).entries());
+        const { fullName, address, contact, note } = Object.fromEntries(new FormData(e.currentTarget).entries()) as Record<string, string>;
         if (!fullName || !address || !contact) {
             toast.error("Please fill the form correctly!");
         };
@@ -36,27 +35,20 @@ export default function CheckoutPopup({ delvMeth, total, items }: Props) {
             }, 5000);
             return;
         } else {
-            if (delvMeth === 'payment') {
-                const res = await fetch('/api/checkout_session', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        price: total,
-                    }),
-                })
-                const data = await res.json();
-
-                if (data.url) {
-                    window.location.href = data.url;
-                } else {
-                    return toast.error(data.message || "Failed to create checkout session");
-                };
-            };
             const checkoutData = { fullName, address, contact, note, orderedItems: items, userId: session?.user.id, userName: session?.user.name };
-            const res = await checkoutAction(checkoutData);
-            console.log(res);
+            const checkoutRes = await checkoutAction(delvMeth, checkoutData);
+
+            if (!checkoutRes.success) {
+                toast.error(checkoutRes.message || "Failed to checkout! please try again");
+                setTimeout(() => {
+                    return window.location.reload()
+                }, 3000);
+            };
+
+            toast.success(checkoutRes.message);
+            setTimeout(() => {
+                    return window.location.reload()
+                }, 3000);
         };
     };
 
