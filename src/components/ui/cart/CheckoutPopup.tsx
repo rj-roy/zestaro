@@ -1,5 +1,6 @@
 "use client";
 import { Items } from "@/components/pages/Cart/OrderSummary";
+import { useCart } from "@/components/providers/CartProvider";
 import { checkoutAction } from "@/lib/actions/checkoutAction";
 import { useSession } from "@/lib/auth-client";
 import { ShoppingBag, X } from "lucide-react";
@@ -12,10 +13,13 @@ interface Props {
     items: Items[];
 };
 
+//initialize the loadin for the place order button.
+
 export default function CheckoutPopup({ delvMeth, items }: Props) {
     const [isOpen, setIsOpen] = useState(false);
     const { data: session } = useSession();
     const router = useRouter();
+    const { syncItems } = useCart();
 
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -45,10 +49,13 @@ export default function CheckoutPopup({ delvMeth, items }: Props) {
                 }, 3000);
             };
 
-            toast.success(checkoutRes.message);
-            setTimeout(() => {
-                    return window.location.reload()
-                }, 3000);
+            // toast.success(checkoutRes.message);
+
+            if(checkoutRes.success){
+                router.push('/cart/success');
+                syncItems();
+                return;
+            };
         };
     };
 
