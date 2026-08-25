@@ -8,6 +8,7 @@ export interface Items {
   itemId: string;
   itemName: string;
   itemPrice: number;
+  quantity: number;
 }
 
 interface OrderSummaryProps {
@@ -120,7 +121,6 @@ export default function OrderSummary({ subtotal, itemCount, items }: OrderSummar
 
       <CheckoutPopup
         delvMeth={delvMeth}
-        total={total}
         items={items}
       />
       {/* <button

@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 const RootCartComp = () => {
     const { cartItems, cartCount, syncItems, updateQuantity, removeItem } = useCart();
-    const items = cartItems.map(({itemId, itemName, itemPrice})=>({itemId, itemName, itemPrice}))
+    const items = cartItems.map(({itemId, itemName, itemPrice, quantity})=>({itemId, itemName, itemPrice, quantity}))
 
     useEffect(() => {
         syncItems(true);
